@@ -32,5 +32,5 @@ export function App({ launch }: { launch: Launch }) {
   if (state.kind === "failed") {
     return <StatusMessage text={state.reason === "signIn" ? text.signInFailed : text.serverUnavailable} />;
   }
-  return <Greeting title={text.greeting(state.me.firstName)} subtitle={text.petSoon} />;
+  return <Greeting title={text.greeting(state.me.firstName)} petLabel={text.petLabel} />;
 }
