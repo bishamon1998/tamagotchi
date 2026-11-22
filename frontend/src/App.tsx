@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { fetchMe, SignInError, type Me } from "./api";
 import { languageOf, messages } from "./i18n/messages";
 import type { Launch } from "./telegram";
-import { Greeting } from "./components/Greeting";
+import { Home } from "./components/home/Home";
 import { StatusMessage } from "./components/StatusMessage";
 
 type State =
@@ -32,5 +32,5 @@ export function App({ launch }: { launch: Launch }) {
   if (state.kind === "failed") {
     return <StatusMessage text={state.reason === "signIn" ? text.signInFailed : text.serverUnavailable} />;
   }
-  return <Greeting title={text.greeting(state.me.firstName)} petLabel={text.petLabel} />;
+  return <Home name={state.me.firstName} text={text} />;
 }

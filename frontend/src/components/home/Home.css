@@ -1,0 +1,14 @@
+.home {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 20px 16px 32px;
+}
+
+.home__greeting {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 800;
+}
