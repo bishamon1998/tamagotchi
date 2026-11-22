@@ -1,0 +1,29 @@
+server:
+  port: ${PORT:8080}
+
+spring:
+  application:
+    name: tamagotchi
+  messages:
+    basename: messages
+    encoding: UTF-8
+    fallback-to-system-locale: false
+  mvc:
+    problemdetails:
+      enabled: true
+
+telegram:
+  bot-token: ${TELEGRAM_BOT_TOKEN:}
+  api-url: ${TELEGRAM_API_URL:https://api.telegram.org}
+  mini-app-url: ${MINI_APP_URL:}
+  init-data-max-age: ${TELEGRAM_INIT_DATA_MAX_AGE:24h}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      probes:
+        enabled: true

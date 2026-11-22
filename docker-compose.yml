@@ -1,0 +1,27 @@
+name: tamagotchi
+
+services:
+  # Telegram bot and the Mini App API in one process.
+  backend:
+    build:
+      context: .
+      dockerfile: backend/app/Dockerfile
+    environment:
+      PORT: 8080
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:?Set TELEGRAM_BOT_TOKEN in .env}
+      MINI_APP_URL: ${MINI_APP_URL:-}
+    restart: unless-stopped
+
+  # Mini App pages; proxies /api to the backend.
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    environment:
+      PORT: 3000
+      BACKEND_UPSTREAM: http://backend:8080
+    ports:
+      - "127.0.0.1:3000:3000"
+    depends_on:
+      - backend
+    restart: unless-stopped

@@ -1,0 +1,13 @@
+.status-message {
+  display: grid;
+  place-items: center;
+  min-height: 100dvh;
+  padding: 0 16px;
+  text-align: center;
+}
+
+.status-message__text {
+  margin: 0;
+  max-width: 320px;
+  font-size: 17px;
+}
