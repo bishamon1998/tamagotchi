@@ -8,8 +8,8 @@
   font-weight: 800;
 }
 
-.greeting__subtitle {
-  margin: 6px 0 0;
-  font-size: 17px;
-  color: var(--color-text-secondary);
+.greeting__pet {
+  display: flex;
+  justify-content: center;
+  margin-top: 32px;
 }

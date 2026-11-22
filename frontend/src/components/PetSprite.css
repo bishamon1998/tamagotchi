@@ -1,0 +1,31 @@
+/* Each frame is its own 61x70 px image drawn at the same spot: with one sheet and shifting offsets,
+   fractional screen scaling rounds pixel columns differently per frame and the pet seems to change width.
+   The image is scaled by a whole number so pixels stay square and sharp. */
+.pet-sprite {
+  --pet-scale: 3;
+
+  width: calc(61px * var(--pet-scale));
+  height: calc(70px * var(--pet-scale));
+  background-image: url("../assets/pet/corgi-idle.png");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  image-rendering: pixelated;
+  animation: pet-sprite-idle 5.7s step-end infinite;
+}
+
+/* Uneven timing keeps the idle loop from looking mechanical. */
+@keyframes pet-sprite-idle {
+  0% { background-image: url("../assets/pet/corgi-idle.png"); }
+  21% { background-image: url("../assets/pet/corgi-ear.png"); }
+  25.4% { background-image: url("../assets/pet/corgi-idle.png"); }
+  41.2% { background-image: url("../assets/pet/corgi-blink.png"); }
+  43.9% { background-image: url("../assets/pet/corgi-idle.png"); }
+  68.4% { background-image: url("../assets/pet/corgi-mouth-closed.png"); }
+  100% { background-image: url("../assets/pet/corgi-mouth-closed.png"); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pet-sprite {
+    animation: none;
+  }
+}
