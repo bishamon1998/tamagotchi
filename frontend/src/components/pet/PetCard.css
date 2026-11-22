@@ -1,0 +1,40 @@
+.pet-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 12px 16px 16px;
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.pet-card__stage {
+  display: flex;
+  justify-content: center;
+  margin: 0 -4px;
+  padding: 20px 0 12px;
+  border-radius: var(--radius-inner);
+  background: var(--color-stage);
+}
+
+.pet-card__heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.pet-card__name {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.pet-card__age {
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+
+.pet-card__stats {
+  display: grid;
+  gap: 10px;
+}

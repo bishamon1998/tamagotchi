@@ -1,0 +1,31 @@
+.pet-actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.pet-actions__button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 4px;
+  border: 0;
+  border-radius: var(--radius-inner);
+  background: var(--color-stage);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.pet-actions__button:disabled {
+  cursor: default;
+}
+
+.pet-actions__button svg {
+  width: 24px;
+  height: 24px;
+  color: var(--color-accent);
+}
