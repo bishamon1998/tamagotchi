@@ -7,6 +7,7 @@ import java.io.IOException;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -16,6 +17,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 /** Runs the whole bot against a local Bot API and checks what users get back. */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Import(TestDatabase.class)
 class BotIT {
 
     private static final String MINI_APP_URL = "https://app.example.test/";

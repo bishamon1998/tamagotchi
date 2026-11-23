@@ -3,22 +3,13 @@ package com.tamagotchi;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.security.GeneralSecurityException;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.HexFormat;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
-
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -29,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /** Calls the Mini App API over HTTP with launch data signed the way Telegram signs it. */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Import(TestDatabase.class)
 class MiniAppApiIT {
 
     private static final String BOT_TOKEN = "456:mini-app-test";
@@ -47,7 +39,7 @@ class MiniAppApiIT {
     @Test
     void returnsTheSignedInUser() throws IOException {
         String body = api().get().uri("/api/v1/me")
-                .header("Authorization", "tma " + signed(ANNA, Instant.now()))
+                .header("Authorization", "tma " + TelegramLaunchData.signed(BOT_TOKEN, ANNA, Instant.now()))
                 .retrieve().body(String.class);
 
         JsonNode me = new ObjectMapper().readTree(body);
@@ -58,14 +50,14 @@ class MiniAppApiIT {
 
     @Test
     void rejectsChangedLaunchData() {
-        String forged = signed(ANNA, Instant.now()).replace("2001", "2002");
+        String forged = TelegramLaunchData.signed(BOT_TOKEN, ANNA, Instant.now()).replace("2001", "2002");
 
         assertThat(statusOf("tma " + forged)).isEqualTo(401);
     }
 
     @Test
     void rejectsLaunchDataOlderThanADay() {
-        String old = signed(ANNA, Instant.now().minus(Duration.ofHours(25)));
+        String old = TelegramLaunchData.signed(BOT_TOKEN, ANNA, Instant.now().minus(Duration.ofHours(25)));
 
         assertThat(statusOf("tma " + old)).isEqualTo(401);
     }
@@ -88,33 +80,6 @@ class MiniAppApiIT {
 
     private RestClient api() {
         return RestClient.create("http://localhost:" + port);
-    }
-
-    /** Builds initData as Telegram does: HMAC of sorted fields, with a key derived from the bot token. */
-    private static String signed(String userJson, Instant authDate) {
-        Map<String, String> fields = new TreeMap<>(Map.of(
-                "auth_date", String.valueOf(authDate.getEpochSecond()),
-                "query_id", "AAH-test",
-                "signature", "third-party-signature",
-                "user", userJson));
-        String dataCheckString = fields.entrySet().stream()
-                .map(field -> field.getKey() + "=" + field.getValue())
-                .collect(Collectors.joining("\n"));
-        byte[] secret = hmac("WebAppData".getBytes(StandardCharsets.UTF_8), BOT_TOKEN);
-        fields.put("hash", HexFormat.of().formatHex(hmac(secret, dataCheckString)));
-        return fields.entrySet().stream()
-                .map(field -> field.getKey() + "=" + URLEncoder.encode(field.getValue(), StandardCharsets.UTF_8))
-                .collect(Collectors.joining("&"));
-    }
-
-    private static byte[] hmac(byte[] key, String data) {
-        try {
-            Mac mac = Mac.getInstance("HmacSHA256");
-            mac.init(new SecretKeySpec(key, "HmacSHA256"));
-            return mac.doFinal(data.getBytes(StandardCharsets.UTF_8));
-        } catch (GeneralSecurityException e) {
-            throw new IllegalStateException(e);
-        }
     }
 
     private static FakeBotApi createTelegram() {

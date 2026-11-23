@@ -1,6 +1,21 @@
 name: tamagotchi
 
 services:
+  # Keeps the pets.
+  database:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_DB: tamagotchi
+      POSTGRES_USER: tamagotchi
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:?Set DATABASE_PASSWORD in .env}
+    volumes:
+      - database:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "tamagotchi", "-d", "tamagotchi"]
+      interval: 5s
+      retries: 10
+    restart: unless-stopped
+
   # Telegram bot and the Mini App API in one process.
   backend:
     build:
@@ -10,6 +25,12 @@ services:
       PORT: 8080
       TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:?Set TELEGRAM_BOT_TOKEN in .env}
       MINI_APP_URL: ${MINI_APP_URL:-}
+      DATABASE_URL: jdbc:postgresql://database:5432/tamagotchi
+      DATABASE_USERNAME: tamagotchi
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+    depends_on:
+      database:
+        condition: service_healthy
     restart: unless-stopped
 
   # Mini App pages; proxies /api to the backend.
@@ -25,3 +46,6 @@ services:
     depends_on:
       - backend
     restart: unless-stopped
+
+volumes:
+  database:
