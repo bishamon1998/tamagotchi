@@ -8,6 +8,10 @@ spring:
     basename: messages
     encoding: UTF-8
     fallback-to-system-locale: false
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/tamagotchi}
+    username: ${DATABASE_USERNAME:tamagotchi}
+    password: ${DATABASE_PASSWORD:}
   mvc:
     problemdetails:
       enabled: true

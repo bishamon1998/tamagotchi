@@ -13,6 +13,7 @@
 
   <modules>
     <module>backend/common</module>
+    <module>backend/pet</module>
     <module>backend/app</module>
   </modules>
 
@@ -28,6 +29,11 @@
       <dependency>
         <groupId>com.tamagotchi</groupId>
         <artifactId>common</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.tamagotchi</groupId>
+        <artifactId>pet</artifactId>
         <version>${project.version}</version>
       </dependency>
       <!-- Plain library, not the Spring Boot starter: the starter targets Spring Boot 3. -->

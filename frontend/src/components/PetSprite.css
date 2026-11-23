@@ -24,8 +24,54 @@
   100% { background-image: url("../assets/pet/corgi-mouth-closed.png"); }
 }
 
+/* Reactions to care actions play once; the component then returns to idle. */
+.pet-sprite--feed {
+  animation: pet-sprite-chew 2.4s step-end;
+}
+
+@keyframes pet-sprite-chew {
+  0%, 25%, 50%, 75% {
+    background-image: url("../assets/pet/corgi-happy.png");
+  }
+  12.5%, 37.5%, 62.5%, 87.5%, 100% {
+    background-image: url("../assets/pet/corgi-happy-chew.png");
+  }
+}
+
+/* Two hops of 4 sprite pixels, so the pet stays on the pixel grid at its peak. */
+.pet-sprite--play {
+  --pet-hop: calc(-4px * var(--pet-scale));
+  background-image: url("../assets/pet/corgi-happy.png");
+  animation: pet-sprite-hop 0.5s ease-in-out 2;
+}
+
+@keyframes pet-sprite-hop {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(var(--pet-hop));
+  }
+}
+
+.pet-sprite--sleep {
+  animation: pet-sprite-sleep 3.2s step-end;
+}
+
+@keyframes pet-sprite-sleep {
+  0%, 50% {
+    background-image: url("../assets/pet/corgi-sleep.png");
+  }
+  25%, 75%, 100% {
+    background-image: url("../assets/pet/corgi-sleep-z.png");
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .pet-sprite {
+  .pet-sprite,
+  .pet-sprite--feed,
+  .pet-sprite--play,
+  .pet-sprite--sleep {
     animation: none;
   }
 }
