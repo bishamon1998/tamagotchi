@@ -8,12 +8,23 @@ import { BallIcon } from "../icons/BallIcon";
 import { MoonIcon } from "../icons/MoonIcon";
 import { CoinIcon } from "../icons/CoinIcon";
 
-type Props = { text: Messages; pending: PetAction | null; coins: number; treatPrice: number; onCare: (action: PetAction) => void };
+type Props = {
+  text: Messages;
+  pending: PetAction | null;
+  asleep: boolean;
+  coins: number;
+  treatPrice: number;
+  onCare: (action: PetAction) => void;
+};
 
-/** Care buttons. All are locked while one action is on its way to the server; a treat needs enough coins. */
-export function PetActions({ text, pending, coins, treatPrice, onCare }: Props) {
+/**
+ * Care buttons. All are locked while one action is on its way to the server and while the pet sleeps; a treat also
+ * needs enough coins.
+ */
+export function PetActions({ text, pending, asleep, coins, treatPrice, onCare }: Props) {
+  const blocked = pending !== null || asleep;
   const button = (action: PetAction, label: string, icon: ReactNode) => (
-    <ActionButton label={label} icon={icon} busy={pending === action} disabled={pending !== null} onClick={() => onCare(action)} />
+    <ActionButton label={label} icon={icon} busy={pending === action} locked={asleep} disabled={blocked} onClick={() => onCare(action)} />
   );
   return (
     <div className="pet-actions">
@@ -24,8 +35,8 @@ export function PetActions({ text, pending, coins, treatPrice, onCare }: Props) 
         icon={<BoneIcon />}
         price={treatPrice}
         busy={pending === "treat"}
-        locked={coins < treatPrice}
-        disabled={pending !== null || coins < treatPrice}
+        locked={asleep || coins < treatPrice}
+        disabled={blocked || coins < treatPrice}
         onClick={() => onCare("treat")}
       />
       {button("play", text.actions.play, <BallIcon />)}
@@ -39,7 +50,7 @@ type ButtonProps = {
   ariaLabel?: string;
   icon: ReactNode;
   price?: number;
-  /** Not enough coins: shown greyed out. */
+  /** Not available right now (the pet sleeps, or not enough coins): shown greyed out. */
   locked?: boolean;
   busy: boolean;
   disabled: boolean;

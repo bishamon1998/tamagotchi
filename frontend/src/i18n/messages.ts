@@ -14,6 +14,14 @@ function countRu(count: number, one: string, few: string, many: string): string 
   return `${count} ${form === "one" ? one : form === "few" ? few : many}`;
 }
 
+/** "1 h 40 min", "2 h", "25 min". */
+function hoursAndMinutes(minutes: number, hour: string, minute: string): string {
+  const hours = Math.floor(minutes / 60);
+  const rest = minutes % 60;
+  const parts = [hours > 0 ? `${hours} ${hour}` : "", rest > 0 || hours === 0 ? `${rest} ${minute}` : ""];
+  return parts.filter(Boolean).join(" ");
+}
+
 const coinsEn = (count: number) => countEn(count, "coin", "coins");
 const coinsRu = (count: number) => countRu(count, "монета", "монеты", "монет");
 
@@ -29,6 +37,7 @@ export const messages = {
     actions: { feed: "Feed", treat: "Treat", play: "Play", sleep: "Sleep" },
     treatFor: (price: number) => `Give a treat for ${coinsEn(price)}`,
     careFailed: "Did not work. Try again.",
+    asleep: (minutes: number) => `Asleep. Wakes up in ${hoursAndMinutes(minutes, "h", "min")}.`,
     coins: coinsEn,
     dailyBonus: (coins: number, days: number) =>
       days > 1 ? `+${coinsEn(coins)} for visiting, ${countEn(days, "day", "days")} in a row.` : `+${coinsEn(coins)} for visiting today.`,
@@ -48,6 +57,14 @@ export const messages = {
       "corgi-portrait": "Corgi portrait",
       "sea-picture": "Sea picture",
     } satisfies Record<DecorItemId, string>,
+    tester: {
+      title: "Tester tools",
+      coins: "+100 coins",
+      skipHours: "Skip 3 hours",
+      skipDay: "Next day",
+      startOver: "Start over",
+      failed: "Did not work.",
+    },
     gamesTitle: "Party games",
     soon: "Soon",
     hatTitle: "Hat",
@@ -68,6 +85,7 @@ export const messages = {
     actions: { feed: "Покормить", treat: "Угостить", play: "Поиграть", sleep: "Уложить" },
     treatFor: (price: number) => `Угостить за ${coinsRu(price)}`,
     careFailed: "Не получилось. Попробуй ещё раз.",
+    asleep: (minutes: number) => `Спит. Проснётся через ${hoursAndMinutes(minutes, "ч", "мин")}.`,
     coins: coinsRu,
     dailyBonus: (coins: number, days: number) =>
       days > 1
@@ -89,6 +107,14 @@ export const messages = {
       "corgi-portrait": "Портрет корги",
       "sea-picture": "Картина с морем",
     } satisfies Record<DecorItemId, string>,
+    tester: {
+      title: "Для тестирования",
+      coins: "+100 монет",
+      skipHours: "Промотать 3 часа",
+      skipDay: "Следующий день",
+      startOver: "Начать заново",
+      failed: "Не получилось.",
+    },
     gamesTitle: "Игры для компании",
     soon: "Скоро",
     hatTitle: "Шляпа",

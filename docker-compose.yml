@@ -25,6 +25,7 @@ services:
       PORT: 8080
       TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:?Set TELEGRAM_BOT_TOKEN in .env}
       MINI_APP_URL: ${MINI_APP_URL:-}
+      TESTER_IDS: ${TESTER_IDS:-}
       DATABASE_URL: jdbc:postgresql://database:5432/tamagotchi
       DATABASE_USERNAME: tamagotchi
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}

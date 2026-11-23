@@ -50,7 +50,7 @@
   color: var(--color-coin);
 }
 
-/* Not enough coins for a treat: the icons lose their color, the text stays readable. */
+/* Not available (the pet sleeps, or not enough coins for a treat): the icons lose their color, the text stays readable. */
 .pet-actions__button--locked svg,
 .pet-actions__button--locked .pet-actions__price svg {
   color: var(--color-text-secondary);

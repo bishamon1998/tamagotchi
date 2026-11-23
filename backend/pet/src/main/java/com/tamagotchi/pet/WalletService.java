@@ -64,6 +64,14 @@ class WalletService {
         wallets.record(userId, -price, reason, detail, now);
     }
 
+    /** Credits coins that were not earned through the game rules, such as a tester's top-up. */
+    @Transactional
+    void grant(long userId, int amount, CoinReason reason, Instant now) {
+        Wallet wallet = lock(userId);
+        wallets.save(userId, wallet.withCoins(wallet.coins() + amount));
+        wallets.record(userId, amount, reason, null, now);
+    }
+
     @Transactional
     int coins(long userId) {
         return lock(userId).coins();

@@ -62,13 +62,44 @@ class PetApiIT {
     }
 
     @Test
-    void sleepingRestoresEnergy() throws IOException {
+    void aPetPutToBedSleepsUntilItIsRested() throws IOException {
         act(3004, "play");
         act(3004, "play");
 
         JsonNode pet = act(3004, "sleep");
 
-        assertNeeds(pet, 80, 100, 100);
+        assertNeeds(pet, 80, 100, 60);
+        assertThat(Duration.between(Instant.now(), Instant.parse(pet.path("asleepUntil").asText())))
+                .isBetween(Duration.ofMinutes(119), Duration.ofMinutes(121));
+    }
+
+    @Test
+    void aSleepingPetCannotBeCaredFor() throws IOException {
+        act(3008, "sleep");
+
+        int status = api().post().uri("/api/v1/pet/actions/play")
+                .header("Authorization", signedIn(3008))
+                .exchange((request, response) -> response.getStatusCode().value());
+
+        assertThat(status).isEqualTo(409);
+    }
+
+    @Test
+    void sleepRestoresEnergyAndThePetWakesUp() throws IOException {
+        act(3009, "play");
+        act(3009, "play");
+        act(3009, "sleep");
+        jdbc.sql("""
+                UPDATE pets
+                SET updated_at = updated_at - INTERVAL '3 hours', asleep_until = asleep_until - INTERVAL '3 hours'
+                WHERE user_id = 3009
+                """).update();
+
+        JsonNode pet = get(3009);
+
+        // Two hours asleep fill energy from 60 to 100, the third hour awake takes 2 off again.
+        assertNeeds(pet, 68, 91, 98);
+        assertThat(pet.path("asleepUntil").isNull()).isTrue();
     }
 
     @Test

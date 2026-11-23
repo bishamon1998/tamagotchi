@@ -15,24 +15,25 @@ import { DecorShopDialog } from "../decor/DecorShopDialog";
 import { PetScene } from "./PetScene";
 import { StatMeter } from "./StatMeter";
 import { PetActions } from "./PetActions";
+import { SleepStatus } from "./SleepStatus";
 
 type Props = { initData: string; home: PetHome; text: Messages };
 
 /** The pet in its decorated room with its needs, the user's coins, the care actions and the decor shop. */
 export function PetCard({ initData, home, text }: Props) {
   const { coins, gain, update: updateCoins } = useCoins(home.wallet.coins);
-  const { needs, pending, failed, reaction, care, touch, endReaction } = usePet(initData, home.needs, updateCoins);
+  const { pet, pending, failed, reaction, care, touch, endReaction } = usePet(initData, home.pet, updateCoins);
   const decor = useDecor(initData, home.decor.items, updateCoins);
   const [shopOpen, setShopOpen] = useState(false);
   const { dailyBonus, streak, treatPrice } = home.wallet;
 
   return (
     <section className="pet-card" aria-labelledby="pet-name">
-      <PetScene night={reaction?.kind === "sleep"} decor={<RoomDecor items={placedDecor(decor.items)} treat={reaction?.kind === "treat"} />}>
+      <PetScene night={pet.asleepUntil !== null} decor={<RoomDecor items={placedDecor(decor.items)} treat={reaction?.kind === "treat"} />}>
         <PetSprite
           key={reaction?.id ?? 0}
           label={text.petTouch}
-          mood={moodOf(needs)}
+          mood={moodOf(pet)}
           reaction={reaction?.kind}
           onTouch={touch}
           onReactionEnd={endReaction}
@@ -45,11 +46,12 @@ export function PetCard({ initData, home, text }: Props) {
       </div>
       {dailyBonus > 0 && <DailyBonus text={text.dailyBonus(dailyBonus, streak)} />}
       <div className="pet-card__stats">
-        <StatMeter label={text.stats.satiety} value={needs.satiety} />
-        <StatMeter label={text.stats.mood} value={needs.mood} />
-        <StatMeter label={text.stats.energy} value={needs.energy} />
+        <StatMeter label={text.stats.satiety} value={pet.satiety} />
+        <StatMeter label={text.stats.mood} value={pet.mood} />
+        <StatMeter label={text.stats.energy} value={pet.energy} />
       </div>
-      <PetActions text={text} pending={pending} coins={coins} treatPrice={treatPrice} onCare={care} />
+      <PetActions text={text} pending={pending} asleep={pet.asleepUntil !== null} coins={coins} treatPrice={treatPrice} onCare={care} />
+      {pet.asleepUntil && <SleepStatus asleepUntil={pet.asleepUntil} text={text.asleep} />}
       {failed && <p className="pet-card__error" role="alert">{text.careFailed}</p>}
       <button className="pet-card__shop" type="button" onClick={() => setShopOpen(true)}>{text.shop.open}</button>
       <DecorShopDialog

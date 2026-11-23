@@ -22,6 +22,10 @@ telegram:
   mini-app-url: ${MINI_APP_URL:}
   init-data-max-age: ${TELEGRAM_INIT_DATA_MAX_AGE:24h}
 
+# Comma-separated Telegram user ids allowed to use the tester tools in the Mini App; empty means nobody.
+testers:
+  ids: ${TESTER_IDS:}
+
 management:
   endpoints:
     web:

@@ -1,5 +1,6 @@
 package com.tamagotchi.pet;
 
+import java.time.Instant;
 import java.util.Arrays;
 
 import org.springframework.http.HttpStatus;
@@ -15,20 +16,21 @@ import com.tamagotchi.miniapp.TelegramUser;
 @RestController
 class PetController {
 
-    record Pet(int satiety, int mood, int energy) {
+    /** {@code asleepUntil} is when a sleeping pet wakes up, or null while it is awake. */
+    record Pet(int satiety, int mood, int energy, Instant asleepUntil) {
 
-        static Pet of(PetNeeds needs) {
-            return new Pet(percent(needs.satiety()), percent(needs.mood()), percent(needs.energy()));
+        static Pet of(PetState pet) {
+            PetNeeds needs = pet.needs();
+            return new Pet(percent(needs.satiety()), percent(needs.mood()), percent(needs.energy()), pet.asleepUntil());
         }
     }
 
     /** The pet after a care action, the balance after it and the coins the action earned (0 if none). */
-    record Care(int satiety, int mood, int energy, int coins, int earned) {
+    record Care(int satiety, int mood, int energy, Instant asleepUntil, int coins, int earned) {
 
         static Care of(CareOutcome outcome) {
-            PetNeeds needs = outcome.needs();
-            return new Care(percent(needs.satiety()), percent(needs.mood()), percent(needs.energy()),
-                    outcome.coins(), outcome.earned());
+            Pet pet = Pet.of(outcome.pet());
+            return new Care(pet.satiety(), pet.mood(), pet.energy(), pet.asleepUntil(), outcome.coins(), outcome.earned());
         }
     }
 
@@ -43,7 +45,10 @@ class PetController {
         return Pet.of(pets.current(user.id()));
     }
 
-    /** {@code action} is feed, treat, play or sleep. A treat the user cannot afford is refused with 409. */
+    /**
+     * {@code action} is feed, treat, play or sleep. Care for a sleeping pet and a treat the user cannot afford are
+     * refused with 409.
+     */
     @PostMapping("/api/v1/pet/actions/{action}")
     Care care(TelegramUser user, @PathVariable String action) {
         return Care.of(pets.care(user.id(), parse(action)));

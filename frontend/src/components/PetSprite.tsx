@@ -13,8 +13,8 @@ type Props = {
 
 /**
  * The pet drawn from its pixel-art frames, as a button the user can tap. Between reactions it shows its mood: the idle
- * loop (breathing, ear twitch, blink), a tail wag when all is well, or a sad face for a low need. A reaction (chewing,
- * hopping, sleeping, a tap) plays once on top. Remount it (change its key) to replay the same reaction.
+ * loop (breathing, ear twitch, blink), a tail wag when all is well, a sad face for a low need, or sleep. A reaction
+ * (chewing, hopping, a tap) plays once on top. Remount it (change its key) to replay the same reaction.
  */
 export function PetSprite({ label, mood, reaction, onTouch, onReactionEnd }: Props) {
   const className = ["pet-sprite", `pet-sprite--${mood}`, reaction && `pet-sprite--react-${reaction}`].filter(Boolean).join(" ");

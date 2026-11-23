@@ -1,5 +1,6 @@
 package com.tamagotchi.pet;
 
+import java.time.Duration;
 import java.time.ZoneId;
 
 /** Game balance: how fast needs drop, how much each action restores, and how coins are earned and spent. */
@@ -20,7 +21,14 @@ final class PetRules {
     static final double PLAY_MOOD = 25;
     /** Playing tires the pet, so play and sleep have to alternate. */
     static final double PLAY_ENERGY = -10;
-    static final double SLEEP_ENERGY = 40;
+
+    /**
+     * A pet put to bed sleeps until its energy is full, gaining this much per hour, and cannot be cared for
+     * meanwhile. Sleep takes hours, so play and sleep cannot be alternated to farm coins.
+     */
+    static final double SLEEP_ENERGY_PER_HOUR = 20;
+    /** Even a rested pet naps at least this long once put to bed. */
+    static final Duration SHORTEST_SLEEP = Duration.ofHours(1);
 
     /** A treat fills more than plain food and cheers the pet up. Plain food stays free so the pet never starves. */
     static final double TREAT_SATIETY = 40;
@@ -47,6 +55,10 @@ final class PetRules {
     static final int CEILING_LAMP_PRICE = 70;
     static final int CORGI_PORTRAIT_PRICE = 120;
     static final int SEA_PICTURE_PRICE = 100;
+
+    /** Tester tools: a top-up that buys any decor item, and a skip long enough to see needs drop or a nap end. */
+    static final int TESTER_COINS = 100;
+    static final Duration TESTER_TIME_SKIP = Duration.ofHours(3);
 
     private PetRules() {
     }

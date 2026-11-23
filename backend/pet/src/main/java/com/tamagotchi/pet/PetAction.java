@@ -9,7 +9,8 @@ enum PetAction {
     FEED(PetNeeds::satiety, 0, needs -> needs.plus(PetRules.FEED_SATIETY, 0, 0)),
     TREAT(PetNeeds::satiety, PetRules.TREAT_PRICE, needs -> needs.plus(PetRules.TREAT_SATIETY, PetRules.TREAT_MOOD, 0)),
     PLAY(PetNeeds::mood, 0, needs -> needs.plus(0, PetRules.PLAY_MOOD, PetRules.PLAY_ENERGY)),
-    SLEEP(PetNeeds::energy, 0, needs -> needs.plus(0, 0, PetRules.SLEEP_ENERGY));
+    // Sleep changes nothing at once: the pet regains energy while it sleeps (see PetNeeds#afterSleeping).
+    SLEEP(PetNeeds::energy, 0, UnaryOperator.identity());
 
     private final ToDoubleFunction<PetNeeds> need;
     private final int price;
@@ -27,6 +28,11 @@ enum PetAction {
 
     int price() {
         return price;
+    }
+
+    /** Whether the action puts the pet to bed, so it sleeps for a while and cannot be cared for meanwhile. */
+    boolean putsToBed() {
+        return this == SLEEP;
     }
 
     /** Free care pays when the pet really needed it; bought care never pays, or coins would breed coins. */

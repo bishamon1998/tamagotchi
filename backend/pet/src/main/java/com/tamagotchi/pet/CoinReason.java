@@ -5,5 +5,7 @@ enum CoinReason {
     CARE,
     DAILY_BONUS,
     TREAT,
-    DECOR
+    DECOR,
+    /** Coins a tester added to their own wallet with the tester tools. */
+    TESTER
 }
