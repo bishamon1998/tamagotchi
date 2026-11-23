@@ -71,7 +71,8 @@
 }
 
 /* Reactions play once on top of the mood; the component then returns to the mood. */
-.pet-sprite--react-feed {
+.pet-sprite--react-feed,
+.pet-sprite--react-treat {
   animation: pet-sprite-chew 2.4s step-end;
 }
 

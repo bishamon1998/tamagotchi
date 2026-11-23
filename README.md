@@ -10,7 +10,10 @@ One repository, two deployable services:
 - **backend** (Java 25, Spring Boot 4, Maven modules, one process)
   - `backend/common`: Telegram connection (long polling via [telegrambots](https://github.com/rubenlagus/TelegramBots)), command routing, localized replies, Mini App sign-in.
   - `backend/pet`: the pet. Satiety, mood and energy drop every hour and are kept in PostgreSQL as of the last change;
-    `GET /api/v1/pet` brings them up to date, `POST /api/v1/pet/actions/{feed|play|sleep}` applies a care action.
+    `GET /api/v1/pet` brings them up to date, `POST /api/v1/pet/actions/{feed|treat|play|sleep}` applies a care action.
+    Coins are counted on the server, with a ledger of every credit and debit: care earns coins only when the need was low
+    (with a daily cap), the day's first `GET /api/v1/wallet` pays a bonus that grows with the streak of days in a row,
+    a treat costs coins (plain food stays free), and `/api/v1/decor` sells room decor, bought once and placed one per slot.
     Balance numbers live in `PetRules`.
   - `backend/app`: runs the bot and the API; `/start` greeting with an "Open the app" button; `GET /api/v1/me`.
 - **frontend** (`frontend/`, React, Vite, TypeScript): the Telegram Mini App. `server.mjs` serves the built pages and proxies `/api` to the backend.
@@ -62,6 +65,7 @@ Integration tests only: `sh mvnw verify`. They start PostgreSQL in Docker (Testc
 
 - `BotIT` starts the whole backend against a local HTTP server that speaks the Bot API, sends user messages through `getUpdates` and checks the replies.
 - `PetApiIT` hatches, feeds, plays with and puts a pet to sleep through the API, and checks that needs drop over time.
+- `CoinsApiIT` earns coins (daily bonus and streak, useful care, daily cap) and spends them on treats and decor.
 - `MiniAppApiIT` calls `/api/v1/me` over HTTP with launch data signed the way Telegram signs it, plus changed, expired and missing data.
 
 No requests leave the machine. The frontend is type-checked and built in CI.

@@ -1,6 +1,6 @@
 package com.tamagotchi.pet;
 
-import java.util.Locale;
+import java.util.Arrays;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,10 +20,15 @@ class PetController {
         static Pet of(PetNeeds needs) {
             return new Pet(percent(needs.satiety()), percent(needs.mood()), percent(needs.energy()));
         }
+    }
 
-        /** Rounded up, so a need shows 0 only when it is really empty. */
-        private static int percent(double value) {
-            return (int) Math.ceil(value);
+    /** The pet after a care action, the balance after it and the coins the action earned (0 if none). */
+    record Care(int satiety, int mood, int energy, int coins, int earned) {
+
+        static Care of(CareOutcome outcome) {
+            PetNeeds needs = outcome.needs();
+            return new Care(percent(needs.satiety()), percent(needs.mood()), percent(needs.energy()),
+                    outcome.coins(), outcome.earned());
         }
     }
 
@@ -38,17 +43,21 @@ class PetController {
         return Pet.of(pets.current(user.id()));
     }
 
-    /** {@code action} is feed, play or sleep. */
+    /** {@code action} is feed, treat, play or sleep. A treat the user cannot afford is refused with 409. */
     @PostMapping("/api/v1/pet/actions/{action}")
-    Pet care(TelegramUser user, @PathVariable String action) {
-        return Pet.of(pets.care(user.id(), parse(action)));
+    Care care(TelegramUser user, @PathVariable String action) {
+        return Care.of(pets.care(user.id(), parse(action)));
+    }
+
+    /** Rounded up, so a need shows 0 only when it is really empty. */
+    private static int percent(double value) {
+        return (int) Math.ceil(value);
     }
 
     private static PetAction parse(String action) {
-        try {
-            return PetAction.valueOf(action.toUpperCase(Locale.ROOT));
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Unknown action: " + action);
-        }
+        return Arrays.stream(PetAction.values())
+                .filter(candidate -> candidate.id().equals(action))
+                .findFirst()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Unknown action: " + action));
     }
 }

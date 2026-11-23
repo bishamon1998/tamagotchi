@@ -2,7 +2,10 @@
 export type PetNeeds = { satiety: number; mood: number; energy: number };
 
 /** Care actions the backend accepts. */
-export type PetAction = "feed" | "play" | "sleep";
+export type PetAction = "feed" | "treat" | "play" | "sleep";
+
+/** The pet after a care action, the balance after it and the coins the action earned (0 if none). */
+export type CareResult = PetNeeds & { coins: number; earned: number };
 
 /** Below this a need is shown in the warning color and the pet looks unwell. */
 export const LOW_NEED = 30;

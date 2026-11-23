@@ -1,0 +1,38 @@
+.coin-balance {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.coin-balance svg {
+  width: 20px;
+  height: 20px;
+  color: var(--color-coin);
+}
+
+/* Rises above the balance and fades out. */
+.coin-balance__gain {
+  position: absolute;
+  right: 0;
+  bottom: 100%;
+  color: var(--color-accent);
+  font-size: 14px;
+  opacity: 0;
+  animation: coin-balance-gain 1.2s ease-out;
+}
+
+@keyframes coin-balance-gain {
+  0% { transform: translateY(6px); opacity: 0; }
+  20% { opacity: 1; }
+  70% { opacity: 1; }
+  100% { transform: translateY(-4px); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .coin-balance__gain {
+    display: none;
+  }
+}

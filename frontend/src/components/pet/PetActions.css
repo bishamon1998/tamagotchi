@@ -1,21 +1,23 @@
 .pet-actions {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 8px;
 }
 
 .pet-actions__button {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  padding: 10px 4px;
+  min-width: 0;
+  padding: 10px 2px;
   border: 0;
   border-radius: var(--radius-inner);
   background: var(--color-stage);
   color: var(--color-text);
   font: inherit;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
   cursor: pointer;
 }
@@ -28,4 +30,28 @@
   width: 24px;
   height: 24px;
   color: var(--color-accent);
+}
+
+/* A paid action's price sits in the button's top corner, so all four labels stay on one line. */
+.pet-actions__price {
+  position: absolute;
+  top: 4px;
+  right: 5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.pet-actions__button .pet-actions__price svg {
+  width: 12px;
+  height: 12px;
+  color: var(--color-coin);
+}
+
+/* Not enough coins for a treat: the icons lose their color, the text stays readable. */
+.pet-actions__button--locked svg,
+.pet-actions__button--locked .pet-actions__price svg {
+  color: var(--color-text-secondary);
 }

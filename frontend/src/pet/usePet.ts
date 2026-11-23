@@ -9,8 +9,11 @@ export type PetReactionKind = PetAction | "touch" | "annoyed";
 /** The pet's last reaction; the id changes every time so a repeat plays again. */
 export type PetReaction = { kind: PetReactionKind; id: number };
 
-/** The pet's needs, a way to care for it and its reactions. One care action at a time, so quick taps do not pile up. */
-export function usePet(initData: string, initial: PetNeeds) {
+/**
+ * The pet's needs, a way to care for it and its reactions. One care action at a time, so quick taps do not pile up.
+ * Each action reports the new balance and the coins it earned to `onCoins`.
+ */
+export function usePet(initData: string, initial: PetNeeds, onCoins: (coins: number, earned: number) => void) {
   const [needs, setNeeds] = useState(initial);
   const [pending, setPending] = useState<PetAction | null>(null);
   const [failed, setFailed] = useState(false);
@@ -24,7 +27,9 @@ export function usePet(initData: string, initial: PetNeeds) {
     setPending(action);
     setFailed(false);
     try {
-      setNeeds(await careForPet(initData, action));
+      const { coins, earned, ...needs } = await careForPet(initData, action);
+      setNeeds(needs);
+      onCoins(coins, earned);
       react(action);
     } catch (error) {
       console.error("Care action failed", error);

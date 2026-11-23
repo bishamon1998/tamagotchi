@@ -39,8 +39,26 @@
   position: relative;
 }
 
+/* Decor layer over the room and under the pet, the room's full size and centred like the room image, so decor
+   positions are plain room pixels. It dims with the room at night. */
+.pet-scene > .pet-scene__decor {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: var(--room-width);
+  height: var(--room-height);
+  transform: translateX(-50%);
+  pointer-events: none;
+  transition: filter 0.4s ease;
+}
+
+.pet-scene--night > .pet-scene__decor {
+  filter: brightness(0.55) saturate(0.7);
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .pet-scene::before {
+  .pet-scene::before,
+  .pet-scene > .pet-scene__decor {
     transition: none;
   }
 }

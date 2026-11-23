@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { fetchMe, fetchPet, SignInError, type Me } from "./api";
-import type { PetNeeds } from "./pet/petNeeds";
+import { fetchMe, fetchPetHome, SignInError, type Me } from "./api";
+import type { PetHome } from "./pet/petHome";
 import { languageOf, messages } from "./i18n/messages";
 import type { Launch } from "./telegram";
 import { Home } from "./components/home/Home";
@@ -8,10 +8,10 @@ import { StatusMessage } from "./components/StatusMessage";
 
 type State =
   | { kind: "loading" }
-  | { kind: "ready"; me: Me; pet: PetNeeds }
+  | { kind: "ready"; me: Me; pet: PetHome }
   | { kind: "failed"; reason: "signIn" | "server" };
 
-/** Signs the user in with Telegram launch data, loads their pet and shows the home screen. */
+/** Signs the user in with Telegram launch data, loads their pet, coins and decor and shows the home screen. */
 export function App({ launch }: { launch: Launch }) {
   const [state, setState] = useState<State>({ kind: "loading" });
   const language = state.kind === "ready" ? languageOf(state.me.language) : languageOf(launch?.languageCode ?? navigator.language);
@@ -23,7 +23,7 @@ export function App({ launch }: { launch: Launch }) {
 
   useEffect(() => {
     if (!launch) return;
-    Promise.all([fetchMe(launch.initData), fetchPet(launch.initData)])
+    Promise.all([fetchMe(launch.initData), fetchPetHome(launch.initData)])
       .then(([me, pet]) => setState({ kind: "ready", me, pet }))
       .catch((error) => setState({ kind: "failed", reason: error instanceof SignInError ? "signIn" : "server" }));
   }, [launch]);
