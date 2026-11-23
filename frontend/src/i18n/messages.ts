@@ -3,7 +3,7 @@ export const messages = {
   en: {
     loading: "Loading…",
     greeting: (name: string) => `Hi, ${name}!`,
-    petLabel: "Your corgi",
+    petTouch: "Pet your corgi",
     petName: "Corgi",
     petAge: "Puppy",
     stats: { satiety: "Satiety", mood: "Mood", energy: "Energy" },
@@ -22,7 +22,7 @@ export const messages = {
   ru: {
     loading: "Загрузка…",
     greeting: (name: string) => `Привет, ${name}!`,
-    petLabel: "Твой корги",
+    petTouch: "Погладить корги",
     petName: "Корги",
     petAge: "Щенок",
     stats: { satiety: "Сытость", mood: "Настроение", energy: "Энергия" },

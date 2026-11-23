@@ -11,6 +11,8 @@
   --shadow-card: 0 1px 2px rgb(20 24 32 / 6%), 0 4px 16px rgb(20 24 32 / 5%);
   --radius-card: 20px;
   --radius-inner: 14px;
+  /* Pixel art (the pet and its room) is drawn at this whole-number scale. */
+  --pixel-scale: 2;
   --font-body: "Nunito Variable", sans-serif;
 }
 

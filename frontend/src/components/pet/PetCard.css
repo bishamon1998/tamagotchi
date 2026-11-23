@@ -8,15 +8,6 @@
   box-shadow: var(--shadow-card);
 }
 
-.pet-card__stage {
-  display: flex;
-  justify-content: center;
-  margin: 0 -4px;
-  padding: 20px 0 12px;
-  border-radius: var(--radius-inner);
-  background: var(--color-stage);
-}
-
 .pet-card__heading {
   display: flex;
   align-items: baseline;
