@@ -4,8 +4,10 @@ import "@fontsource-variable/nunito";
 import "./styles/base.css";
 import { App } from "./App";
 import { startTelegram } from "./telegram";
+import { preloadArt } from "./pet/preloadArt";
 
 const launch = startTelegram();
+preloadArt();
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
