@@ -1,21 +1,29 @@
 import "./PetCard.css";
 import type { Messages } from "../../i18n/messages";
-import type { PetNeeds } from "../../pet/petNeeds";
+import { moodOf, type PetNeeds } from "../../pet/petNeeds";
 import { usePet } from "../../pet/usePet";
 import { PetSprite } from "../PetSprite";
+import { PetScene } from "./PetScene";
 import { StatMeter } from "./StatMeter";
 import { PetActions } from "./PetActions";
 
 type Props = { initData: string; initialNeeds: PetNeeds; text: Messages };
 
-/** The pet with its needs and the care actions. */
+/** The pet in its room with its needs and the care actions. */
 export function PetCard({ initData, initialNeeds, text }: Props) {
-  const { needs, pending, failed, reaction, care, endReaction } = usePet(initData, initialNeeds);
+  const { needs, pending, failed, reaction, care, touch, endReaction } = usePet(initData, initialNeeds);
   return (
     <section className="pet-card" aria-labelledby="pet-name">
-      <div className="pet-card__stage">
-        <PetSprite key={reaction?.id ?? 0} label={text.petLabel} reaction={reaction?.action} onReactionEnd={endReaction} />
-      </div>
+      <PetScene night={reaction?.kind === "sleep"}>
+        <PetSprite
+          key={reaction?.id ?? 0}
+          label={text.petTouch}
+          mood={moodOf(needs)}
+          reaction={reaction?.kind}
+          onTouch={touch}
+          onReactionEnd={endReaction}
+        />
+      </PetScene>
       <div className="pet-card__heading">
         <h2 className="pet-card__name" id="pet-name">{text.petName}</h2>
         <span className="pet-card__age">{text.petAge}</span>

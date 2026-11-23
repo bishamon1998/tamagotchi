@@ -1,15 +1,29 @@
-/* Each frame is its own 61x70 px image drawn at the same spot: with one sheet and shifting offsets,
+/* Each frame is its own 76x70 px image drawn at the same spot: with one sheet and shifting offsets,
    fractional screen scaling rounds pixel columns differently per frame and the pet seems to change width.
-   The image is scaled by a whole number so pixels stay square and sharp. */
+   The image is scaled by a whole number so pixels stay square and sharp; the room behind uses the same scale. */
 .pet-sprite {
-  --pet-scale: 3;
-
-  width: calc(61px * var(--pet-scale));
-  height: calc(70px * var(--pet-scale));
+  display: block;
+  width: calc(76px * var(--pixel-scale));
+  height: calc(70px * var(--pixel-scale));
+  padding: 0;
+  border: 0;
+  border-radius: 12px;
+  background-color: transparent;
   background-image: url("../assets/pet/corgi-idle.png");
   background-repeat: no-repeat;
   background-size: 100% 100%;
   image-rendering: pixelated;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pet-sprite:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Moods loop between reactions. */
+.pet-sprite--content {
   animation: pet-sprite-idle 5.7s step-end infinite;
 }
 
@@ -24,8 +38,40 @@
   100% { background-image: url("../assets/pet/corgi-mouth-closed.png"); }
 }
 
-/* Reactions to care actions play once; the component then returns to idle. */
-.pet-sprite--feed {
+/* The tail swings out and back through three positions. */
+.pet-sprite--happy {
+  background-image: url("../assets/pet/corgi-wag-1.png");
+  animation: pet-sprite-wag 0.9s step-end infinite;
+}
+
+@keyframes pet-sprite-wag {
+  0% { background-image: url("../assets/pet/corgi-wag-1.png"); }
+  25% { background-image: url("../assets/pet/corgi-wag-2.png"); }
+  50% { background-image: url("../assets/pet/corgi-wag-3.png"); }
+  75% { background-image: url("../assets/pet/corgi-wag-2.png"); }
+}
+
+.pet-sprite--hungry {
+  background-image: url("../assets/pet/corgi-hungry.png");
+}
+
+.pet-sprite--bored {
+  background-image: url("../assets/pet/corgi-bored.png");
+}
+
+.pet-sprite--tired {
+  background-image: url("../assets/pet/corgi-bored.png");
+  animation: pet-sprite-yawn 6s step-end infinite;
+}
+
+@keyframes pet-sprite-yawn {
+  0% { background-image: url("../assets/pet/corgi-bored.png"); }
+  72% { background-image: url("../assets/pet/corgi-yawn.png"); }
+  90% { background-image: url("../assets/pet/corgi-bored.png"); }
+}
+
+/* Reactions play once on top of the mood; the component then returns to the mood. */
+.pet-sprite--react-feed {
   animation: pet-sprite-chew 2.4s step-end;
 }
 
@@ -38,23 +84,33 @@
   }
 }
 
-/* Two hops of 4 sprite pixels, so the pet stays on the pixel grid at its peak. */
-.pet-sprite--play {
-  --pet-hop: calc(-4px * var(--pet-scale));
+/* Hops of 6 sprite pixels, so the pet stays on the pixel grid at its peak. It slows down going up and speeds up
+   falling back, like a real jump. */
+.pet-sprite--react-play,
+.pet-sprite--react-touch {
+  --pet-hop: calc(-6px * var(--pixel-scale));
+}
+
+.pet-sprite--react-play {
   background-image: url("../assets/pet/corgi-happy.png");
-  animation: pet-sprite-hop 0.5s ease-in-out 2;
+  animation: pet-sprite-hop 0.5s 2;
 }
 
 @keyframes pet-sprite-hop {
-  0%, 100% {
+  0% {
     transform: translateY(0);
+    animation-timing-function: ease-out;
   }
-  50% {
+  45% {
     transform: translateY(var(--pet-hop));
+    animation-timing-function: ease-in;
+  }
+  100% {
+    transform: translateY(0);
   }
 }
 
-.pet-sprite--sleep {
+.pet-sprite--react-sleep {
   animation: pet-sprite-sleep 3.2s step-end;
 }
 
@@ -67,11 +123,36 @@
   }
 }
 
+/* A tap: a startled hop, then a giggle. */
+.pet-sprite--react-touch {
+  animation:
+    pet-sprite-startle 1.2s step-end,
+    pet-sprite-hop 0.45s;
+}
+
+@keyframes pet-sprite-startle {
+  0% { background-image: url("../assets/pet/corgi-surprised.png"); }
+  40%, 100% { background-image: url("../assets/pet/corgi-giggle.png"); }
+}
+
+.pet-sprite--react-annoyed {
+  animation: pet-sprite-huff 1.4s step-end;
+}
+
+@keyframes pet-sprite-huff {
+  0%, 100% { background-image: url("../assets/pet/corgi-grumpy.png"); }
+}
+
+/* Without motion the loops stop and reactions end at once: they still need their animationend to finish. */
 @media (prefers-reduced-motion: reduce) {
-  .pet-sprite,
-  .pet-sprite--feed,
-  .pet-sprite--play,
-  .pet-sprite--sleep {
+  .pet-sprite--content,
+  .pet-sprite--happy,
+  .pet-sprite--tired {
     animation: none;
+  }
+
+  .pet-sprite[class*="pet-sprite--react-"] {
+    animation-duration: 1ms;
+    animation-iteration-count: 1;
   }
 }

@@ -1,0 +1,46 @@
+/* The pet's room: 160x100 px pixel art at the shared pixel scale. Narrow screens crop its sides; wider ones show it
+   whole, centred in the card. */
+.pet-scene {
+  --room-width: calc(160px * var(--pixel-scale));
+  --room-height: calc(100px * var(--pixel-scale));
+  /* Puts the pet's paws on the middle of the rug. */
+  --pet-floor: calc(14px * var(--pixel-scale));
+
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: min(100%, var(--room-width));
+  height: var(--room-height);
+  margin: 0 auto;
+  padding-bottom: var(--pet-floor);
+  overflow: hidden;
+  border-radius: var(--radius-inner);
+  background: url("../../assets/scene/room-day.png") center / var(--room-width) var(--room-height) no-repeat;
+  image-rendering: pixelated;
+}
+
+/* The night room fades in over the day one while the pet sleeps. */
+.pet-scene::before {
+  position: absolute;
+  inset: 0;
+  background: inherit;
+  background-image: url("../../assets/scene/room-night.png");
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  content: "";
+}
+
+.pet-scene--night::before {
+  opacity: 1;
+}
+
+.pet-scene > * {
+  position: relative;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pet-scene::before {
+    transition: none;
+  }
+}
