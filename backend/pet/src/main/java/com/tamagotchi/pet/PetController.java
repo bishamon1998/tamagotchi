@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -16,12 +18,16 @@ import com.tamagotchi.miniapp.TelegramUser;
 @RestController
 class PetController {
 
-    /** {@code asleepUntil} is when a sleeping pet wakes up, or null while it is awake. */
-    record Pet(int satiety, int mood, int energy, Instant asleepUntil) {
+    /**
+     * {@code asleepUntil} is when a sleeping pet wakes up, or null while it is awake; {@code name} is null until the
+     * user names the pet.
+     */
+    record Pet(String name, int satiety, int mood, int energy, Instant asleepUntil) {
 
         static Pet of(PetState pet) {
             PetNeeds needs = pet.needs();
-            return new Pet(percent(needs.satiety()), percent(needs.mood()), percent(needs.energy()), pet.asleepUntil());
+            return new Pet(pet.name(), percent(needs.satiety()), percent(needs.mood()), percent(needs.energy()),
+                    pet.asleepUntil());
         }
     }
 
@@ -34,6 +40,9 @@ class PetController {
         }
     }
 
+    record Naming(String name) {
+    }
+
     private final PetService pets;
 
     PetController(PetService pets) {
@@ -43,6 +52,12 @@ class PetController {
     @GetMapping("/api/v1/pet")
     Pet pet(TelegramUser user) {
         return Pet.of(pets.current(user.id()));
+    }
+
+    /** Names the pet, or renames it. A blank or too long name is refused with 400. */
+    @PutMapping("/api/v1/pet/name")
+    Pet rename(TelegramUser user, @RequestBody Naming naming) {
+        return Pet.of(pets.rename(user.id(), naming.name()));
     }
 
     /**

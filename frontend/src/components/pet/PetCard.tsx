@@ -1,9 +1,11 @@
 import "./PetCard.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Messages } from "../../i18n/messages";
-import { moodOf } from "../../pet/petNeeds";
+import { moodOf, type PetMood } from "../../pet/petNeeds";
+import type { PetDemo } from "../../pet/petDemo";
 import type { PetHome } from "../../pet/petHome";
-import { usePet } from "../../pet/usePet";
+import { usePet, type PetReactionKind } from "../../pet/usePet";
+import type { CareProp } from "../../decor/decorArt";
 import { useCoins } from "../../pet/useCoins";
 import { placedDecor } from "../../decor/decor";
 import { useDecor } from "../../decor/useDecor";
@@ -16,31 +18,60 @@ import { PetScene } from "./PetScene";
 import { StatMeter } from "./StatMeter";
 import { PetActions } from "./PetActions";
 import { SleepStatus } from "./SleepStatus";
+import { RenameDialog } from "./RenameDialog";
+import { PencilIcon } from "../icons/PencilIcon";
 
-type Props = { initData: string; home: PetHome; text: Messages };
+/** `demo` is a tester's request to show an animation now (see TesterPanel). */
+type Props = { initData: string; home: PetHome; text: Messages; demo?: PetDemo | null };
 
-/** The pet in its decorated room with its needs, the user's coins, the care actions and the decor shop. */
-export function PetCard({ initData, home, text }: Props) {
+/** What lies next to the pet while it reacts to care: food, a treat or its ball. */
+function careProp(reaction: PetReactionKind | undefined): CareProp | null {
+  if (reaction === "feed") return "bowl";
+  if (reaction === "treat") return "treat";
+  if (reaction === "play") return "ball";
+  return null;
+}
+
+/** The pet in its decorated room with its name, needs, the user's coins, the care actions and the decor shop. */
+export function PetCard({ initData, home, text, demo = null }: Props) {
   const { coins, gain, update: updateCoins } = useCoins(home.wallet.coins);
-  const { pet, pending, failed, reaction, care, touch, endReaction } = usePet(initData, home.pet, updateCoins);
+  const { pet, pending, failed, reaction, care, rename, touch, react, endReaction } = usePet(initData, home.pet, updateCoins);
   const decor = useDecor(initData, home.decor.items, updateCoins);
   const [shopOpen, setShopOpen] = useState(false);
+  const [renameOpen, setRenameOpen] = useState(false);
+  const name = pet.name ?? text.petName;
+  // A mood a tester holds on screen; null shows the real one.
+  const [demoMood, setDemoMood] = useState<PetMood | null>(null);
+  const mood = demoMood ?? moodOf(pet);
+
+  // Runs once per tester request; react changes every render, so only the request is a dependency.
+  useEffect(() => {
+    if (!demo) return;
+    if (demo.kind === "reaction") react(demo.reaction);
+    else setDemoMood(demo.mood);
+  }, [demo]);
   const { dailyBonus, streak, treatPrice } = home.wallet;
 
   return (
     <section className="pet-card" aria-labelledby="pet-name">
-      <PetScene night={pet.asleepUntil !== null} decor={<RoomDecor items={placedDecor(decor.items)} treat={reaction?.kind === "treat"} />}>
+      <PetScene night={mood === "asleep"} decor={<RoomDecor items={placedDecor(decor.items)} prop={careProp(reaction?.kind)} />}>
         <PetSprite
           key={reaction?.id ?? 0}
           label={text.petTouch}
-          mood={moodOf(pet)}
+          mood={mood}
           reaction={reaction?.kind}
           onTouch={touch}
           onReactionEnd={endReaction}
         />
       </PetScene>
       <div className="pet-card__heading">
-        <h2 className="pet-card__name" id="pet-name">{text.petName}</h2>
+        <h2 className="pet-card__name">
+          <button className="pet-card__rename" type="button" onClick={() => setRenameOpen(true)}>
+            <span id="pet-name">{name}</span>
+            <PencilIcon />
+            <span className="visually-hidden"> {text.rename.open}</span>
+          </button>
+        </h2>
         <span className="pet-card__age">{text.petAge}</span>
         <CoinBalance coins={coins} label={text.coins(coins)} gain={gain} />
       </div>
@@ -54,6 +85,16 @@ export function PetCard({ initData, home, text }: Props) {
       {pet.asleepUntil && <SleepStatus asleepUntil={pet.asleepUntil} text={text.asleep} />}
       {failed && <p className="pet-card__error" role="alert">{text.careFailed}</p>}
       <button className="pet-card__shop" type="button" onClick={() => setShopOpen(true)}>{text.shop.open}</button>
+      <RenameDialog
+        open={renameOpen}
+        text={text.rename}
+        name={name}
+        onSave={async (next) => {
+          await rename(next);
+          setRenameOpen(false);
+        }}
+        onClose={() => setRenameOpen(false)}
+      />
       <DecorShopDialog
         open={shopOpen}
         text={text}

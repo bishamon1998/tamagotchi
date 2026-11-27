@@ -1,0 +1,52 @@
+.modal-dialog {
+  width: min(100% - 32px, 440px);
+  max-height: min(100% - 32px, 640px);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: var(--shadow-card);
+}
+
+.modal-dialog::backdrop {
+  background: rgb(10 12 16 / 45%);
+}
+
+.modal-dialog__body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+}
+
+.modal-dialog__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.modal-dialog__title {
+  flex: 1;
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.modal-dialog__close {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--color-stage);
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.modal-dialog__close svg {
+  width: 20px;
+  height: 20px;
+}

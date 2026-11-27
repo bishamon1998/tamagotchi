@@ -1,10 +1,10 @@
 /* Each frame is its own 76x70 px image drawn at the same spot: with one sheet and shifting offsets,
    fractional screen scaling rounds pixel columns differently per frame and the pet seems to change width.
-   The image is scaled by a whole number so pixels stay square and sharp; the room behind uses the same scale. */
+   It is drawn at the pet scale, a third smaller than the room, with pixelated scaling so pixels stay square. */
 .pet-sprite {
   display: block;
-  width: calc(76px * var(--pixel-scale));
-  height: calc(70px * var(--pixel-scale));
+  width: calc(76px * var(--pet-scale));
+  height: calc(70px * var(--pet-scale));
   padding: 0;
   border: 0;
   border-radius: 12px;
@@ -101,7 +101,7 @@
    falling back, like a real jump. */
 .pet-sprite--react-play,
 .pet-sprite--react-touch {
-  --pet-hop: calc(-6px * var(--pixel-scale));
+  --pet-hop: calc(-6px * var(--pet-scale));
 }
 
 .pet-sprite--react-play {

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { careForPet, fetchPet } from "../api";
+import { careForPet, fetchPet, namePet } from "../api";
 import type { PetAction, PetState } from "./petNeeds";
 import { createTouchCounter } from "./petTouch";
 
@@ -51,6 +51,11 @@ export function usePet(initData: string, initial: PetState, onCoins: (coins: num
     }
   }
 
+  /** Gives the pet a new name; fails (rejects) if the backend refuses it. */
+  async function rename(name: string) {
+    setPet(await namePet(initData, name));
+  }
+
   /** A tap on the pet. Ignored while it sleeps or while a care reaction plays, so that is not cut short. */
   function touch() {
     if (pet.asleepUntil) return;
@@ -60,5 +65,5 @@ export function usePet(initData: string, initial: PetState, onCoins: (coins: num
 
   const endReaction = () => setReaction(null);
 
-  return { pet, pending, failed, reaction, care, touch, endReaction };
+  return { pet, pending, failed, reaction, care, rename, touch, react, endReaction };
 }

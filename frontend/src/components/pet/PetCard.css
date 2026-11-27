@@ -20,6 +20,25 @@
   font-weight: 800;
 }
 
+/* The name is a button that opens renaming; it looks like the heading, with a small pencil after it. */
+.pet-card__rename {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.pet-card__rename svg {
+  width: 16px;
+  height: 16px;
+  color: var(--color-text-secondary);
+}
+
 /* Takes the free space, which pushes the coin balance to the right edge. */
 .pet-card__age {
   flex: 1;

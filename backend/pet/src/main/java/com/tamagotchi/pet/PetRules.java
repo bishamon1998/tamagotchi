@@ -56,6 +56,9 @@ final class PetRules {
     static final int CORGI_PORTRAIT_PRICE = 120;
     static final int SEA_PICTURE_PRICE = 100;
 
+    /** Long enough for a real name or a nickname, short enough to fit next to the coins on a phone. */
+    static final int LONGEST_NAME = 20;
+
     /** Tester tools: a top-up that buys any decor item, and a skip long enough to see needs drop or a nap end. */
     static final int TESTER_COINS = 100;
     static final Duration TESTER_TIME_SKIP = Duration.ofHours(3);

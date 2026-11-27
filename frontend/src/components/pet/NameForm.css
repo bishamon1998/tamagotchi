@@ -1,0 +1,45 @@
+.name-form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+}
+
+.name-form__input {
+  min-width: 0;
+  padding: 10px 12px;
+  border: 2px solid var(--color-stage);
+  border-radius: var(--radius-inner);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 16px;
+}
+
+.name-form__input:focus-visible {
+  border-color: var(--color-accent);
+  outline: none;
+}
+
+.name-form__save {
+  padding: 10px 16px;
+  border: 0;
+  border-radius: var(--radius-inner);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.name-form__save:disabled {
+  background: var(--color-stage);
+  color: var(--color-text-secondary);
+  cursor: default;
+}
+
+.name-form__error {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: 14px;
+}
