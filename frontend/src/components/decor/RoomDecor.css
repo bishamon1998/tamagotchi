@@ -19,10 +19,10 @@
 
 /* On the floor left of the pet. */
 .room-decor--dog-bed {
-  --x: 6px;
-  --y: 70px;
-  --width: 36px;
-  --height: 22px;
+  --x: 8px;
+  --y: 74px;
+  --width: 29px;
+  --height: 18px;
 }
 
 /* Hangs from the ceiling above the pet. */
@@ -34,12 +34,18 @@
 }
 
 /* Both pictures hang on the wall above the sideboard; only one is placed at a time. */
-.room-decor--corgi-portrait,
-.room-decor--sea-picture {
+.room-decor--corgi-portrait {
   --x: 130px;
-  --y: 14px;
+  --y: 12px;
   --width: 24px;
-  --height: 18px;
+  --height: 22px;
+}
+
+.room-decor--sea-picture {
+  --x: 129px;
+  --y: 12px;
+  --width: 26px;
+  --height: 21px;
 }
 
 /* On the rug in front of the pet's paws. */
@@ -48,4 +54,32 @@
   --y: 84px;
   --width: 16px;
   --height: 8px;
+}
+
+/* Food and the toy appear beside the pet while it eats or plays, to its right; the ball clears the pet so it shows. */
+.room-decor--bowl {
+  --x: 100px;
+  --y: 76px;
+  --width: 24px;
+  --height: 16px;
+}
+
+.room-decor--ball {
+  --x: 112px;
+  --y: 80px;
+  --width: 12px;
+  --height: 12px;
+  animation: room-decor-bounce 0.5s ease-in-out 2;
+}
+
+/* Bounces with the pet's hops, 6 room pixels up. */
+@keyframes room-decor-bounce {
+  0%, 100% { translate: 0 0; }
+  45% { translate: 0 calc(-6px * var(--pixel-scale)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .room-decor--ball {
+    animation: none;
+  }
 }

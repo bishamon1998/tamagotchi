@@ -7,13 +7,16 @@
   --color-text: var(--tg-theme-text-color, #1d2330);
   --color-text-secondary: var(--tg-theme-subtitle-text-color, #4a505e);
   --color-accent: var(--tg-theme-button-color, #2f7d5b);
+  --color-on-accent: var(--tg-theme-button-text-color, #ffffff);
   --color-warning: #d9822b;
   --color-coin: #b87a0b;
   --shadow-card: 0 1px 2px rgb(20 24 32 / 6%), 0 4px 16px rgb(20 24 32 / 5%);
   --radius-card: 20px;
   --radius-inner: 14px;
-  /* Pixel art (the pet and its room) is drawn at this whole-number scale. */
+  /* Pixel art (the room and its decor) is drawn at this whole-number scale. */
   --pixel-scale: 2;
+  /* The pet is drawn a third smaller than the room, so it fits the room's proportions. */
+  --pet-scale: calc(var(--pixel-scale) * 2 / 3);
   --font-body: "Nunito Variable", sans-serif;
 }
 
@@ -24,6 +27,7 @@
     --color-text: var(--tg-theme-text-color, #f1f2f4);
     --color-text-secondary: var(--tg-theme-subtitle-text-color, #b9bec9);
     --color-accent: var(--tg-theme-button-color, #4fb487);
+    --color-on-accent: var(--tg-theme-button-text-color, #0f2219);
     --color-coin: #e3b04b;
     --shadow-card: none;
   }

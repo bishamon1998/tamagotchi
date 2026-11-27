@@ -38,9 +38,14 @@ class PetRepository {
                     return new StoredPet(
                             new PetNeeds(row.getDouble("satiety"), row.getDouble("mood"), row.getDouble("energy")),
                             row.getTimestamp("updated_at").toInstant(),
-                            asleepUntil == null ? null : asleepUntil.toInstant());
+                            asleepUntil == null ? null : asleepUntil.toInstant(),
+                            row.getString("name"));
                 })
                 .single();
+    }
+
+    void rename(long userId, String name) {
+        jdbc.sql(PetSql.RENAME).param("userId", userId).param("name", name).update();
     }
 
     /** Stores the pet as it is at {@code updatedAt}. */

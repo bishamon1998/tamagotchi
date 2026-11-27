@@ -57,6 +57,18 @@ export const messages = {
       "corgi-portrait": "Corgi portrait",
       "sea-picture": "Sea picture",
     } satisfies Record<DecorItemId, string>,
+    adoption: {
+      arrived: "A box arrived for you. Something inside is moving!",
+      open: "Open the box",
+      hello: "Meet your corgi! What will you call it?",
+      name: { label: "Pet's name", placeholder: "Name", save: "Done", failed: "Could not save the name. Try again." },
+    },
+    rename: {
+      open: "Rename",
+      title: "New name",
+      close: "Close",
+      name: { label: "Pet's name", placeholder: "Name", save: "Save", failed: "Could not save the name. Try again." },
+    },
     tester: {
       title: "Tester tools",
       coins: "+100 coins",
@@ -64,6 +76,12 @@ export const messages = {
       skipDay: "Next day",
       startOver: "Start over",
       failed: "Did not work.",
+      animations: {
+        title: "Animations",
+        reactions: { feed: "Eats", treat: "Chews a treat", play: "Hops", touch: "Petted", annoyed: "Grumbles" },
+        moods: { content: "Calm", happy: "Happy", hungry: "Hungry", tired: "Tired", bored: "Bored", asleep: "Asleep" },
+        realMood: "Real mood",
+      },
     },
     gamesTitle: "Party games",
     soon: "Soon",
@@ -107,6 +125,18 @@ export const messages = {
       "corgi-portrait": "Портрет корги",
       "sea-picture": "Картина с морем",
     } satisfies Record<DecorItemId, string>,
+    adoption: {
+      arrived: "Тебе привезли коробку. Внутри кто-то шевелится!",
+      open: "Открыть коробку",
+      hello: "Это твой корги! Как его назовёшь?",
+      name: { label: "Имя питомца", placeholder: "Имя", save: "Готово", failed: "Не получилось сохранить имя. Попробуй ещё раз." },
+    },
+    rename: {
+      open: "Переименовать",
+      title: "Новое имя",
+      close: "Закрыть",
+      name: { label: "Имя питомца", placeholder: "Имя", save: "Сохранить", failed: "Не получилось сохранить имя. Попробуй ещё раз." },
+    },
     tester: {
       title: "Для тестирования",
       coins: "+100 монет",
@@ -114,6 +144,12 @@ export const messages = {
       skipDay: "Следующий день",
       startOver: "Начать заново",
       failed: "Не получилось.",
+      animations: {
+        title: "Анимации",
+        reactions: { feed: "Ест", treat: "Грызёт косточку", play: "Прыгает", touch: "Погладить", annoyed: "Ворчит" },
+        moods: { content: "Спокойный", happy: "Радуется", hungry: "Голодный", tired: "Устал", bored: "Скучает", asleep: "Спит" },
+        realMood: "Как есть",
+      },
     },
     gamesTitle: "Игры для компании",
     soon: "Скоро",

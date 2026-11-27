@@ -1,0 +1,28 @@
+.animation-controls {
+  display: grid;
+  gap: 8px;
+}
+
+.animation-controls__title {
+  margin: 4px 0 0;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.animation-controls__group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.animation-controls__button {
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--color-stage);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}

@@ -46,10 +46,27 @@ class PetService {
             wallets.spend(userId, action.price(), CoinReason.TREAT, action.id(), now);
         }
         PetNeeds needs = action.applyTo(before.needs());
-        PetState after = new PetState(needs, action.putsToBed() ? now.plus(needs.sleepLength()) : null);
+        PetState after = new PetState(needs, action.putsToBed() ? now.plus(needs.sleepLength()) : null, before.name());
         pets.save(userId, after, now);
         int earned = action.earnsCoins(before.needs()) ? wallets.rewardCare(userId, action, now) : 0;
         return new CareOutcome(after, wallets.coins(userId), earned);
+    }
+
+    /**
+     * Gives the pet a name, or a new one. The name is trimmed and must be 1 to {@link PetRules#LONGEST_NAME} characters
+     * without control characters, otherwise the request is refused with 400 Bad Request.
+     */
+    @Transactional
+    PetState rename(long userId, String name) {
+        String trimmed = name == null ? "" : name.strip();
+        int length = trimmed.codePointCount(0, trimmed.length());
+        if (length == 0 || length > PetRules.LONGEST_NAME || trimmed.codePoints().anyMatch(Character::isISOControl)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "The name must be 1 to " + PetRules.LONGEST_NAME + " characters");
+        }
+        PetState pet = load(userId, clock.instant());
+        pets.rename(userId, trimmed);
+        return new PetState(pet.needs(), pet.asleepUntil(), trimmed);
     }
 
     /** Locks the pet row so two quick taps cannot both act on the same old state. */

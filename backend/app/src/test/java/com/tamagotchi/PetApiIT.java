@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -45,6 +46,27 @@ class PetApiIT {
         JsonNode pet = get(3001);
 
         assertNeeds(pet, 80, 80, 80);
+        assertThat(pet.path("name").isNull()).isTrue();
+    }
+
+    @Test
+    void theUserNamesThePetAndCanRenameIt() throws IOException {
+        get(3010);
+
+        JsonNode named = name(3010, "  Булочка  ");
+        JsonNode renamed = name(3010, "Bun");
+
+        assertThat(named.path("name").asText()).isEqualTo("Булочка");
+        assertThat(renamed.path("name").asText()).isEqualTo("Bun");
+        assertThat(get(3010).path("name").asText()).isEqualTo("Bun");
+        assertNeeds(renamed, 80, 80, 80);
+    }
+
+    @Test
+    void rejectsBlankAndTooLongNames() {
+        assertThat(nameStatus(3011, "   ")).isEqualTo(400);
+        assertThat(nameStatus(3011, "x".repeat(21))).isEqualTo(400);
+        assertThat(nameStatus(3011, "x".repeat(20))).isEqualTo(200);
     }
 
     @Test
@@ -148,6 +170,21 @@ class PetApiIT {
         return json(api().post().uri("/api/v1/pet/actions/{action}", action)
                 .header("Authorization", signedIn(userId))
                 .retrieve().body(String.class));
+    }
+
+    private JsonNode name(long userId, String name) throws IOException {
+        return json(naming(userId, name).retrieve().body(String.class));
+    }
+
+    private int nameStatus(long userId, String name) {
+        return naming(userId, name).exchange((request, response) -> response.getStatusCode().value());
+    }
+
+    private RestClient.RequestBodySpec naming(long userId, String name) {
+        return api().put().uri("/api/v1/pet/name")
+                .header("Authorization", signedIn(userId))
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ObjectMapper().createObjectNode().put("name", name).toString());
     }
 
     private static void assertNeeds(JsonNode pet, int satiety, int mood, int energy) {

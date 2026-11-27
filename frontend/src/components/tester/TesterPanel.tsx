@@ -2,11 +2,18 @@ import "./TesterPanel.css";
 import { useState } from "react";
 import { runTesterTool, type TesterTool } from "../../api";
 import type { Messages } from "../../i18n/messages";
+import type { PetDemoRequest } from "../../pet/petDemo";
+import { AnimationControls } from "./AnimationControls";
 
-type Props = { initData: string; text: Messages["tester"]; onDone: () => void };
+type Props = {
+  initData: string;
+  text: Messages["tester"];
+  onDone: () => void;
+  onDemo: (request: PetDemoRequest) => void;
+};
 
-/** Tools for testers to check the game without waiting. After each one the pet is loaded again. */
-export function TesterPanel({ initData, text, onDone }: Props) {
+/** Tools for testers to check the game without waiting: game tools (the pet is loaded again after each) and animations. */
+export function TesterPanel({ initData, text, onDone, onDemo }: Props) {
   const [pending, setPending] = useState<TesterTool | null>(null);
   const [failed, setFailed] = useState(false);
 
@@ -39,6 +46,7 @@ export function TesterPanel({ initData, text, onDone }: Props) {
         {button("skip-day", text.skipDay)}
         {button("start-over", text.startOver)}
       </div>
+      <AnimationControls text={text.animations} onDemo={onDemo} />
       {failed && <p className="tester-panel__error" role="alert">{text.failed}</p>}
     </section>
   );

@@ -1,8 +1,11 @@
 /** The pet's needs in whole percent, as the backend reports them. */
 export type PetNeeds = { satiety: number; mood: number; energy: number };
 
-/** The pet as the backend reports it: its needs and, while it sleeps, when it wakes up (ISO time, null when awake). */
-export type PetState = PetNeeds & { asleepUntil: string | null };
+/**
+ * The pet as the backend reports it: its needs, when it wakes up while it sleeps (ISO time, null when awake) and its
+ * name (null until the user names it on arrival).
+ */
+export type PetState = PetNeeds & { name: string | null; asleepUntil: string | null };
 
 /** Care actions the backend accepts. */
 export type PetAction = "feed" | "treat" | "play" | "sleep";

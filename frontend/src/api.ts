@@ -33,6 +33,11 @@ export function fetchPet(initData: string): Promise<PetState> {
   return request("/api/v1/pet", initData);
 }
 
+/** Names the pet, or renames it; the backend trims the name and refuses a blank or too long one. */
+export function namePet(initData: string, name: string): Promise<PetState> {
+  return request("/api/v1/pet/name", initData, "PUT", { name });
+}
+
 /** Applies a care action and returns the pet and the balance after it. A sleeping pet or an unaffordable treat fails. */
 export function careForPet(initData: string, action: PetAction): Promise<CareResult> {
   return request(`/api/v1/pet/actions/${action}`, initData, "POST");
@@ -68,17 +73,20 @@ export async function runTesterTool(initData: string, tool: TesterTool): Promise
   await send(path, initData, method);
 }
 
-/** Calls the API and reads its JSON answer. */
-async function request<T>(path: string, initData: string, method: Method = "GET"): Promise<T> {
-  const response = await send(path, initData, method);
+/** Calls the API, with an optional JSON body, and reads its JSON answer. */
+async function request<T>(path: string, initData: string, method: Method = "GET", body?: unknown): Promise<T> {
+  const response = await send(path, initData, method, body);
   return response.json();
 }
 
 /** Calls the API as the signed-in user. The backend checks the Telegram signature in the Authorization header. */
-async function send(path: string, initData: string, method: Method): Promise<Response> {
+async function send(path: string, initData: string, method: Method, body?: unknown): Promise<Response> {
+  const headers: Record<string, string> = { Authorization: `tma ${initData}` };
+  if (body !== undefined) headers["Content-Type"] = "application/json";
   const response = await fetch(path, {
     method,
-    headers: { Authorization: `tma ${initData}` },
+    headers,
+    body: body === undefined ? undefined : JSON.stringify(body),
     signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
   });
   if (response.status === 401) throw new SignInError();
