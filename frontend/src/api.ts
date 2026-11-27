@@ -38,6 +38,11 @@ export function namePet(initData: string, name: string): Promise<PetState> {
   return request("/api/v1/pet/name", initData, "PUT", { name });
 }
 
+/** Strokes the pet; it cheers up a little at most every half a minute (the backend decides). */
+export function strokePet(initData: string): Promise<PetState> {
+  return request("/api/v1/pet/stroke", initData, "POST");
+}
+
 /** Applies a care action and returns the pet and the balance after it. A sleeping pet or an unaffordable treat fails. */
 export function careForPet(initData: string, action: PetAction): Promise<CareResult> {
   return request(`/api/v1/pet/actions/${action}`, initData, "POST");

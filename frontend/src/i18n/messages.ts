@@ -78,7 +78,7 @@ export const messages = {
       failed: "Did not work.",
       animations: {
         title: "Animations",
-        reactions: { feed: "Eats", treat: "Chews a treat", play: "Hops", touch: "Petted", annoyed: "Grumbles" },
+        reactions: { feed: "Eats", treat: "Chews a treat", play: "Hops", touch: "Tapped", pet: "Stroked", annoyed: "Grumbles" },
         moods: { content: "Calm", happy: "Happy", hungry: "Hungry", tired: "Tired", bored: "Bored", asleep: "Asleep" },
         realMood: "Real mood",
       },
@@ -146,7 +146,7 @@ export const messages = {
       failed: "Не получилось.",
       animations: {
         title: "Анимации",
-        reactions: { feed: "Ест", treat: "Грызёт косточку", play: "Прыгает", touch: "Погладить", annoyed: "Ворчит" },
+        reactions: { feed: "Ест", treat: "Грызёт косточку", play: "Прыгает", touch: "Тык", pet: "Гладят", annoyed: "Ворчит" },
         moods: { content: "Спокойный", happy: "Радуется", hungry: "Голодный", tired: "Устал", bored: "Скучает", asleep: "Спит" },
         realMood: "Как есть",
       },

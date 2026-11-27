@@ -1,11 +1,17 @@
 /**
- * Every pixel-art image the room can switch to: the pet's frames, the day and night room, the decor and the arrival
- * box. Animations swap whole images, so an image shown for the first time would be loaded and decoded mid-animation
- * and the first run would stutter.
+ * Every pixel-art image the room can switch to: the pet's frames, the day and night room, the decor, the arrival box
+ * and effects such as hearts. Animations swap whole images, so an image shown for the first time would be loaded and
+ * decoded mid-animation and the first run would stutter.
  */
 const ART_URLS = Object.values(
   import.meta.glob<string>(
-    ["../assets/pet/*.png", "../assets/scene/*.png", "../assets/decor/*.png", "../assets/adoption/*.png"],
+    [
+      "../assets/pet/*.png",
+      "../assets/scene/*.png",
+      "../assets/decor/*.png",
+      "../assets/adoption/*.png",
+      "../assets/effects/*.png",
+    ],
     { eager: true, query: "?url", import: "default" },
   ),
 );

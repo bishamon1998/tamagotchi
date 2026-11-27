@@ -1,0 +1,23 @@
+/* Centred on the stroke point, drawn at the room's pixel scale (the heart is 9x8). */
+.pet-heart {
+  position: absolute;
+  left: calc(var(--x) - 4.5px * var(--pixel-scale));
+  top: calc(var(--y) - 8px * var(--pixel-scale));
+  width: calc(9px * var(--pixel-scale));
+  height: calc(8px * var(--pixel-scale));
+  image-rendering: pixelated;
+  animation: pet-heart-float 0.9s ease-out forwards;
+}
+
+/* Rises 14 room pixels and fades out. */
+@keyframes pet-heart-float {
+  0% { translate: 0 0; opacity: 1; }
+  70% { opacity: 1; }
+  100% { translate: 0 calc(-14px * var(--pixel-scale)); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pet-heart {
+    animation: none;
+  }
+}

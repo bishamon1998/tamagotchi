@@ -30,6 +30,13 @@ final class PetSql {
             WHERE user_id = :userId
             """;
 
+    /** Marks a stroke that counts: only if the last one was before :since (or never); the update count says which. */
+    static final String MARK_STROKED = """
+            UPDATE pets
+            SET last_stroked_at = :now
+            WHERE user_id = :userId AND (last_stroked_at IS NULL OR last_stroked_at <= :since)
+            """;
+
     private PetSql() {
     }
 }

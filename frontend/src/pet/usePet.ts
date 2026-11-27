@@ -1,13 +1,19 @@
 import { useEffect, useRef, useState } from "react";
-import { careForPet, fetchPet, namePet } from "../api";
+import { careForPet, fetchPet, namePet, strokePet } from "../api";
 import type { PetAction, PetState } from "./petNeeds";
 import { createTouchCounter } from "./petTouch";
 
-/** What the pet reacts to: a care action (going to sleep is a state, not a reaction) or a tap on the pet. */
-export type PetReactionKind = Exclude<PetAction, "sleep"> | "touch" | "annoyed";
+/**
+ * What the pet reacts to: a care action (going to sleep is a state, not a reaction), a tap on the pet, or being
+ * stroked ("pet").
+ */
+export type PetReactionKind = Exclude<PetAction, "sleep"> | "touch" | "annoyed" | "pet";
 
 /** The pet's last reaction; the id changes every time so a repeat plays again. */
 export type PetReaction = { kind: PetReactionKind; id: number };
+
+/** Strokes are sent to the backend at most this often: the same cooldown as PetRules.STROKE_COOLDOWN. */
+const STROKE_COOLDOWN_MS = 30_000;
 
 /** Ask for the pet a moment after it should have woken up, so the backend already sees it awake. */
 const WAKE_UP_MARGIN_MS = 1_000;
@@ -22,6 +28,7 @@ export function usePet(initData: string, initial: PetState, onCoins: (coins: num
   const [failed, setFailed] = useState(false);
   const [reaction, setReaction] = useState<PetReaction | null>(null);
   const touchCounter = useRef(createTouchCounter());
+  const lastStrokeSent = useRef(0);
 
   useEffect(() => {
     if (!pet.asleepUntil) return;
@@ -63,7 +70,28 @@ export function usePet(initData: string, initial: PetState, onCoins: (coins: num
     react(touchCounter.current());
   }
 
+  /**
+   * A stroke on the pet. It enjoys it unless it sleeps or is busy with care; a running stroke reaction is kept, not
+   * restarted, so stroking does not stutter. Returns whether the pet took the stroke (and hearts should show).
+   */
+  function stroke(): boolean {
+    if (pet.asleepUntil) return false;
+    const kind = reaction?.kind;
+    if (kind && kind !== "touch" && kind !== "annoyed" && kind !== "pet") return false;
+    if (kind !== "pet") react("pet");
+    sendStroke();
+    return true;
+  }
+
+  /** Lets the backend count the stroke for mood, without asking more often than it would count one. */
+  function sendStroke() {
+    const now = Date.now();
+    if (now - lastStrokeSent.current < STROKE_COOLDOWN_MS) return;
+    lastStrokeSent.current = now;
+    strokePet(initData).then(setPet, (error) => console.error("Stroke failed", error));
+  }
+
   const endReaction = () => setReaction(null);
 
-  return { pet, pending, failed, reaction, care, rename, touch, react, endReaction };
+  return { pet, pending, failed, reaction, care, rename, touch, stroke, react, endReaction };
 }

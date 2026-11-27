@@ -48,6 +48,15 @@ class PetRepository {
         jdbc.sql(PetSql.RENAME).param("userId", userId).param("name", name).update();
     }
 
+    /** Records a stroke unless the pet was already stroked after `since`; returns whether this stroke counts. */
+    boolean markStroked(long userId, Instant now, Instant since) {
+        return jdbc.sql(PetSql.MARK_STROKED)
+                .param("userId", userId)
+                .param("now", Timestamp.from(now))
+                .param("since", Timestamp.from(since))
+                .update() == 1;
+    }
+
     /** Stores the pet as it is at {@code updatedAt}. */
     void save(long userId, PetState pet, Instant updatedAt) {
         PetNeeds needs = pet.needs();

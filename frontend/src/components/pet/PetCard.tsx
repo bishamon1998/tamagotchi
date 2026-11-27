@@ -1,5 +1,5 @@
 import "./PetCard.css";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Messages } from "../../i18n/messages";
 import { moodOf, type PetMood } from "../../pet/petNeeds";
 import type { PetDemo } from "../../pet/petDemo";
@@ -19,6 +19,8 @@ import { StatMeter } from "./StatMeter";
 import { PetActions } from "./PetActions";
 import { SleepStatus } from "./SleepStatus";
 import { RenameDialog } from "./RenameDialog";
+import { PetHearts } from "./PetHearts";
+import { useHearts } from "../../pet/useHearts";
 import { PencilIcon } from "../icons/PencilIcon";
 
 /** `demo` is a tester's request to show an animation now (see TesterPanel). */
@@ -35,7 +37,18 @@ function careProp(reaction: PetReactionKind | undefined): CareProp | null {
 /** The pet in its decorated room with its name, needs, the user's coins, the care actions and the decor shop. */
 export function PetCard({ initData, home, text, demo = null }: Props) {
   const { coins, gain, update: updateCoins } = useCoins(home.wallet.coins);
-  const { pet, pending, failed, reaction, care, rename, touch, react, endReaction } = usePet(initData, home.pet, updateCoins);
+  const { pet, pending, failed, reaction, care, rename, touch, stroke, react, endReaction } = usePet(
+    initData,
+    home.pet,
+    updateCoins,
+  );
+  const scene = useRef<HTMLDivElement>(null);
+  const hearts = useHearts();
+  // A stroke the pet enjoys leaves a heart where the finger is.
+  const strokePet = (at: { x: number; y: number }) => {
+    const room = scene.current?.getBoundingClientRect();
+    if (room && stroke()) hearts.add(at.x - room.left, at.y - room.top);
+  };
   const decor = useDecor(initData, home.decor.items, updateCoins);
   const [shopOpen, setShopOpen] = useState(false);
   const [renameOpen, setRenameOpen] = useState(false);
@@ -54,13 +67,19 @@ export function PetCard({ initData, home, text, demo = null }: Props) {
 
   return (
     <section className="pet-card" aria-labelledby="pet-name">
-      <PetScene night={mood === "asleep"} decor={<RoomDecor items={placedDecor(decor.items)} prop={careProp(reaction?.kind)} />}>
+      <PetScene
+        ref={scene}
+        night={mood === "asleep"}
+        decor={<RoomDecor items={placedDecor(decor.items)} prop={careProp(reaction?.kind)} />}
+        overlay={<PetHearts hearts={hearts.hearts} />}
+      >
         <PetSprite
           key={reaction?.id ?? 0}
           label={text.petTouch}
           mood={mood}
           reaction={reaction?.kind}
           onTouch={touch}
+          onStroke={strokePet}
           onReactionEnd={endReaction}
         />
       </PetScene>

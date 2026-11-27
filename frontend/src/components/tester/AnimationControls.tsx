@@ -7,7 +7,7 @@ import type { PetReactionKind } from "../../pet/usePet";
 type Text = Messages["tester"]["animations"];
 type Props = { text: Text; onDemo: (request: PetDemoRequest) => void };
 
-const REACTIONS: PetReactionKind[] = ["feed", "treat", "play", "touch", "annoyed"];
+const REACTIONS: PetReactionKind[] = ["feed", "treat", "play", "touch", "pet", "annoyed"];
 const MOODS: PetMood[] = ["content", "happy", "hungry", "tired", "bored", "asleep"];
 
 /** Buttons that show any pet animation at once, so testers do not have to wait for it to happen. */

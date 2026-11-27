@@ -12,7 +12,8 @@ One repository, two deployable services:
   - `backend/pet`: the pet. Satiety, mood and energy drop every hour and are kept in PostgreSQL as of the last change;
     `GET /api/v1/pet` brings them up to date, `POST /api/v1/pet/actions/{feed|treat|play|sleep}` applies a care action.
     A pet put to bed sleeps for hours, until its energy is full, and cannot be cared for meanwhile. The user names
-    the pet when it arrives and can rename it later with `PUT /api/v1/pet/name`.
+    the pet when it arrives and can rename it later with `PUT /api/v1/pet/name`. Stroking the pet
+    (`POST /api/v1/pet/stroke`) cheers it up a little, at most every half a minute, and pays no coins.
     Coins are counted on the server, with a ledger of every credit and debit: care earns coins only when the need was low
     (with a daily cap), the day's first `GET /api/v1/wallet` pays a bonus that grows with the streak of days in a row,
     a treat costs coins (plain food stays free), and `/api/v1/decor` sells room decor, bought once and placed one per slot.
@@ -69,7 +70,8 @@ Integration tests only: `sh mvnw verify`. They start PostgreSQL in Docker (Testc
 
 - `BotIT` starts the whole backend against a local HTTP server that speaks the Bot API, sends user messages through `getUpdates` and checks the replies.
 - `PetApiIT` hatches, names, feeds, plays with and puts a pet to sleep through the API, checks that needs drop over time and
-  that a sleeping pet regains energy, wakes up and cannot be cared for meanwhile.
+  that a sleeping pet regains energy, wakes up and cannot be cared for meanwhile, and that stroking cheers it up at most
+  every half a minute.
 - `TesterApiIT` checks that only configured testers can add coins, skip hours or a day and start over.
 - `CoinsApiIT` earns coins (daily bonus and streak, useful care, daily cap) and spends them on treats and decor.
 - `MiniAppApiIT` calls `/api/v1/me` over HTTP with launch data signed the way Telegram signs it, plus changed, expired and missing data.
