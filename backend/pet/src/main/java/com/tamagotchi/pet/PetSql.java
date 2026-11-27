@@ -4,14 +4,14 @@ package com.tamagotchi.pet;
 final class PetSql {
 
     static final String CREATE_IF_MISSING = """
-            INSERT INTO pets (user_id, satiety, mood, energy, updated_at)
-            VALUES (:userId, :satiety, :mood, :energy, :updatedAt)
+            INSERT INTO pets (user_id, satiety, mood, energy, updated_at, asleep_until)
+            VALUES (:userId, :satiety, :mood, :energy, :updatedAt, NULL)
             ON CONFLICT (user_id) DO NOTHING
             """;
 
     /** Locks the row so two quick taps cannot both apply their action to the same old state. */
     static final String FIND_FOR_UPDATE = """
-            SELECT satiety, mood, energy, updated_at
+            SELECT satiety, mood, energy, updated_at, asleep_until
             FROM pets
             WHERE user_id = :userId
             FOR UPDATE
@@ -19,7 +19,8 @@ final class PetSql {
 
     static final String SAVE = """
             UPDATE pets
-            SET satiety = :satiety, mood = :mood, energy = :energy, updated_at = :updatedAt
+            SET satiety = :satiety, mood = :mood, energy = :energy, updated_at = :updatedAt,
+                asleep_until = :asleepUntil
             WHERE user_id = :userId
             """;
 

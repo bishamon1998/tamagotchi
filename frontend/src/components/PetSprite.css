@@ -51,6 +51,18 @@
   75% { background-image: url("../assets/pet/corgi-wag-2.png"); }
 }
 
+/* Put to bed, the pet sleeps for hours: a slow snore with a "z" until it wakes up. */
+.pet-sprite--asleep {
+  background-image: url("../assets/pet/corgi-sleep.png");
+  animation: pet-sprite-sleep 3.2s step-end infinite;
+  cursor: default;
+}
+
+@keyframes pet-sprite-sleep {
+  0% { background-image: url("../assets/pet/corgi-sleep.png"); }
+  50% { background-image: url("../assets/pet/corgi-sleep-z.png"); }
+}
+
 .pet-sprite--hungry {
   background-image: url("../assets/pet/corgi-hungry.png");
 }
@@ -71,7 +83,8 @@
 }
 
 /* Reactions play once on top of the mood; the component then returns to the mood. */
-.pet-sprite--react-feed {
+.pet-sprite--react-feed,
+.pet-sprite--react-treat {
   animation: pet-sprite-chew 2.4s step-end;
 }
 
@@ -110,18 +123,6 @@
   }
 }
 
-.pet-sprite--react-sleep {
-  animation: pet-sprite-sleep 3.2s step-end;
-}
-
-@keyframes pet-sprite-sleep {
-  0%, 50% {
-    background-image: url("../assets/pet/corgi-sleep.png");
-  }
-  25%, 75%, 100% {
-    background-image: url("../assets/pet/corgi-sleep-z.png");
-  }
-}
 
 /* A tap: a startled hop, then a giggle. */
 .pet-sprite--react-touch {
@@ -146,6 +147,7 @@
 /* Without motion the loops stop and reactions end at once: they still need their animationend to finish. */
 @media (prefers-reduced-motion: reduce) {
   .pet-sprite--content,
+  .pet-sprite--asleep,
   .pet-sprite--happy,
   .pet-sprite--tired {
     animation: none;

@@ -1,0 +1,41 @@
+/* Dashed border: a working tool, not part of the game. */
+.tester-panel {
+  display: grid;
+  gap: 10px;
+  padding: 12px 16px 16px;
+  border: 2px dashed var(--color-text-secondary);
+  border-radius: var(--radius-card);
+}
+
+.tester-panel__title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.tester-panel__tools {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.tester-panel__button {
+  padding: 10px 8px;
+  border: 0;
+  border-radius: var(--radius-inner);
+  background: var(--color-stage);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.tester-panel__button:disabled {
+  cursor: default;
+}
+
+.tester-panel__error {
+  margin: 0;
+  font-size: 14px;
+}

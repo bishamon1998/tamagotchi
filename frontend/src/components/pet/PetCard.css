@@ -11,7 +11,7 @@
 .pet-card__heading {
   display: flex;
   align-items: baseline;
-  justify-content: space-between;
+  gap: 8px;
 }
 
 .pet-card__name {
@@ -20,7 +20,9 @@
   font-weight: 800;
 }
 
+/* Takes the free space, which pushes the coin balance to the right edge. */
 .pet-card__age {
+  flex: 1;
   color: var(--color-text-secondary);
   font-size: 14px;
 }
@@ -35,4 +37,16 @@
   color: var(--color-text);
   font-size: 14px;
   text-align: center;
+}
+
+.pet-card__shop {
+  padding: 10px 16px;
+  border: 2px solid var(--color-accent);
+  border-radius: var(--radius-inner);
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
 }

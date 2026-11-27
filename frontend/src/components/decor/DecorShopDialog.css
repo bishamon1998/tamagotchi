@@ -1,0 +1,66 @@
+.decor-shop {
+  width: min(100% - 32px, 440px);
+  max-height: min(100% - 32px, 640px);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: var(--shadow-card);
+}
+
+.decor-shop::backdrop {
+  background: rgb(10 12 16 / 45%);
+}
+
+.decor-shop__body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+}
+
+.decor-shop__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.decor-shop__title {
+  flex: 1;
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.decor-shop__close {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--color-stage);
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.decor-shop__close svg {
+  width: 20px;
+  height: 20px;
+}
+
+.decor-shop__items {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.decor-shop__error {
+  margin: 0;
+  font-size: 14px;
+  text-align: center;
+}

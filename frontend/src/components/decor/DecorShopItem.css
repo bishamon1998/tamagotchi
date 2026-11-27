@@ -1,0 +1,68 @@
+.decor-shop-item {
+  display: grid;
+  grid-template-columns: 76px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px 8px 8px;
+  border-radius: var(--radius-inner);
+  background: var(--color-stage);
+}
+
+/* Art is shown whole in a fixed box; pixels stay square. */
+.decor-shop-item__art {
+  display: grid;
+  place-items: center;
+  height: 44px;
+}
+
+.decor-shop-item__art img {
+  max-width: 100%;
+  max-height: 100%;
+  min-height: 24px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.decor-shop-item__name {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.decor-shop-item__button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 84px;
+  justify-content: center;
+  padding: 8px 12px;
+  border: 2px solid var(--color-accent);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.decor-shop-item__button--buy {
+  border-color: transparent;
+  background: var(--color-accent);
+  color: var(--tg-theme-button-text-color, #ffffff);
+}
+
+.decor-shop-item__button svg {
+  width: 16px;
+  height: 16px;
+}
+
+.decor-shop-item__button:disabled {
+  cursor: default;
+}
+
+/* Too expensive for now: a plain outline instead of a filled button. */
+.decor-shop-item__button--buy:disabled {
+  border-color: var(--color-track);
+  background: transparent;
+  color: var(--color-text-secondary);
+}
