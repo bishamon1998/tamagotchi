@@ -160,6 +160,54 @@ class PetApiIT {
         assertThat(status).isEqualTo(401);
     }
 
+    @Test
+    void strokingCheersThePetUpALittle() throws IOException {
+        get(3012);
+
+        JsonNode pet = stroke(3012);
+
+        assertNeeds(pet, 80, 82, 80);
+    }
+
+    @Test
+    void strokesRightAfterEachOtherCountOnce() throws IOException {
+        get(3013);
+
+        stroke(3013);
+        JsonNode second = stroke(3013);
+
+        assertThat(second.path("mood").asInt()).isEqualTo(82);
+    }
+
+    @Test
+    void aStrokeCountsAgainAfterTheCooldown() throws IOException {
+        get(3014);
+        stroke(3014);
+        jdbc.sql("UPDATE pets SET last_stroked_at = last_stroked_at - INTERVAL '31 seconds' WHERE user_id = 3014")
+                .update();
+
+        JsonNode pet = stroke(3014);
+
+        assertThat(pet.path("mood").asInt()).isEqualTo(84);
+    }
+
+    @Test
+    void aSleepingPetCannotBeStroked() throws IOException {
+        act(3015, "sleep");
+
+        int status = api().post().uri("/api/v1/pet/stroke")
+                .header("Authorization", signedIn(3015))
+                .exchange((request, response) -> response.getStatusCode().value());
+
+        assertThat(status).isEqualTo(409);
+    }
+
+    private JsonNode stroke(long userId) throws IOException {
+        return json(api().post().uri("/api/v1/pet/stroke")
+                .header("Authorization", signedIn(userId))
+                .retrieve().body(String.class));
+    }
+
     private JsonNode get(long userId) throws IOException {
         return json(api().get().uri("/api/v1/pet")
                 .header("Authorization", signedIn(userId))

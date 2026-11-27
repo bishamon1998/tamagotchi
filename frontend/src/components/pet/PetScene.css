@@ -63,3 +63,10 @@
     transition: none;
   }
 }
+
+/* Above the pet and the size of the visible room; positions inside are CSS pixels from its top left corner. */
+.pet-scene > .pet-scene__overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}

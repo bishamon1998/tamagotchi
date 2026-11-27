@@ -54,6 +54,12 @@ class PetController {
         return Pet.of(pets.current(user.id()));
     }
 
+    /** Strokes the pet: a little more mood, at most every half a minute. A sleeping pet is refused with 409. */
+    @PostMapping("/api/v1/pet/stroke")
+    Pet stroke(TelegramUser user) {
+        return Pet.of(pets.stroke(user.id()));
+    }
+
     /** Names the pet, or renames it. A blank or too long name is refused with 400. */
     @PutMapping("/api/v1/pet/name")
     Pet rename(TelegramUser user, @RequestBody Naming naming) {

@@ -56,6 +56,10 @@ final class PetRules {
     static final int CORGI_PORTRAIT_PRICE = 120;
     static final int SEA_PICTURE_PRICE = 100;
 
+    /** Stroking cheers the pet up a little, at most once per cooldown, and never pays coins. */
+    static final double STROKE_MOOD = 2;
+    static final Duration STROKE_COOLDOWN = Duration.ofSeconds(30);
+
     /** Long enough for a real name or a nickname, short enough to fit next to the coins on a phone. */
     static final int LONGEST_NAME = 20;
 
