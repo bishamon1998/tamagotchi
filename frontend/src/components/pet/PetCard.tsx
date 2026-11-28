@@ -1,5 +1,5 @@
 import "./PetCard.css";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import type { Messages } from "../../i18n/messages";
 import { moodOf, type PetMood } from "../../pet/petNeeds";
 import type { PetDemo } from "../../pet/petDemo";
@@ -10,6 +10,7 @@ import { useCoins } from "../../pet/useCoins";
 import { placedDecor } from "../../decor/decor";
 import { useDecor } from "../../decor/useDecor";
 import { PetSprite } from "../PetSprite";
+import { PixelStage } from "../PixelStage";
 import { CoinBalance } from "../coins/CoinBalance";
 import { DailyBonus } from "../coins/DailyBonus";
 import { RoomDecor } from "../decor/RoomDecor";
@@ -20,7 +21,7 @@ import { PetActions } from "./PetActions";
 import { SleepStatus } from "./SleepStatus";
 import { RenameDialog } from "./RenameDialog";
 import { PetHearts } from "./PetHearts";
-import { useHearts } from "../../pet/useHearts";
+import { useStrokeHearts } from "../../pet/useStrokeHearts";
 import { PencilIcon } from "../icons/PencilIcon";
 
 /** `demo` is a tester's request to show an animation now (see TesterPanel). */
@@ -42,13 +43,7 @@ export function PetCard({ initData, home, text, demo = null }: Props) {
     home.pet,
     updateCoins,
   );
-  const scene = useRef<HTMLDivElement>(null);
-  const hearts = useHearts();
-  // A stroke the pet enjoys leaves a heart where the finger is.
-  const strokePet = (at: { x: number; y: number }) => {
-    const room = scene.current?.getBoundingClientRect();
-    if (room && stroke()) hearts.add(at.x - room.left, at.y - room.top);
-  };
+  const { scene, hearts, onStroke } = useStrokeHearts<HTMLDivElement>(stroke);
   const decor = useDecor(initData, home.decor.items, updateCoins);
   const [shopOpen, setShopOpen] = useState(false);
   const [renameOpen, setRenameOpen] = useState(false);
@@ -67,11 +62,12 @@ export function PetCard({ initData, home, text, demo = null }: Props) {
 
   return (
     <section className="pet-card" aria-labelledby="pet-name">
+      <PixelStage>
       <PetScene
         ref={scene}
         night={mood === "asleep"}
-        decor={<RoomDecor items={placedDecor(decor.items)} prop={careProp(reaction?.kind)} />}
-        overlay={<PetHearts hearts={hearts.hearts} />}
+        decor={<RoomDecor items={placedDecor(decor.items)} prop={careProp(reaction?.kind)} vase={home.vase} />}
+        overlay={<PetHearts hearts={hearts} />}
       >
         <PetSprite
           key={reaction?.id ?? 0}
@@ -79,10 +75,11 @@ export function PetCard({ initData, home, text, demo = null }: Props) {
           mood={mood}
           reaction={reaction?.kind}
           onTouch={touch}
-          onStroke={strokePet}
+          onStroke={onStroke}
           onReactionEnd={endReaction}
         />
       </PetScene>
+      </PixelStage>
       <div className="pet-card__heading">
         <h2 className="pet-card__name">
           <button className="pet-card__rename" type="button" onClick={() => setRenameOpen(true)}>

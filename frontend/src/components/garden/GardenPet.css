@@ -1,0 +1,12 @@
+/* On the lawn to the right of the beds (room pixels 106 to 160), paws near the bottom of the garden. */
+.garden-pet {
+  position: absolute;
+  left: calc(106px * var(--pixel-scale));
+  bottom: calc(6px * var(--pixel-scale));
+}
+
+.garden-pet__hearts {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}

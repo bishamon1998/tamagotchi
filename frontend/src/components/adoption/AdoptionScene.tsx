@@ -4,6 +4,7 @@ import closedBox from "../../assets/adoption/gift-box-closed.png";
 import openBox from "../../assets/adoption/gift-box-open.png";
 import type { Messages } from "../../i18n/messages";
 import { PetSprite } from "../PetSprite";
+import { PixelStage } from "../PixelStage";
 import { PetScene } from "../pet/PetScene";
 import { NameForm } from "../pet/NameForm";
 
@@ -25,6 +26,7 @@ export function AdoptionScene({ text, petTouch, onName }: Props) {
 
   return (
     <section className="adoption" aria-labelledby="adoption-title">
+      <PixelStage>
       <PetScene night={false} decor={opened && <img className="adoption__open-box" src={openBox} alt="" />}>
         {opened ? (
           <PetSprite
@@ -41,6 +43,7 @@ export function AdoptionScene({ text, petTouch, onName }: Props) {
           </button>
         )}
       </PetScene>
+      </PixelStage>
       <h2 className="adoption__title" id="adoption-title">{opened ? text.hello : text.arrived}</h2>
       {opened ? (
         <NameForm text={text.name} onSave={onName} />

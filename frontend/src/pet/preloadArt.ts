@@ -11,6 +11,7 @@ const ART_URLS = Object.values(
       "../assets/decor/*.png",
       "../assets/adoption/*.png",
       "../assets/effects/*.png",
+      "../assets/garden/**/*.png",
     ],
     { eager: true, query: "?url", import: "default" },
   ),

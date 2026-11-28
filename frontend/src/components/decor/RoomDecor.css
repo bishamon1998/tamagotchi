@@ -83,3 +83,19 @@
     animation: none;
   }
 }
+
+/* A floor vase by the sideboard (12x14 room pixels) holding a garden flower, which is drawn at the pet's scale like in
+   the garden, its stem going into the vase. */
+.room-decor--vase {
+  --x: 134px;
+  --y: 76px;
+  --width: 12px;
+  --height: 14px;
+}
+
+.room-decor--vase-flower {
+  left: calc(140px * var(--pixel-scale) - 13px * var(--pet-scale));
+  top: calc(80px * var(--pixel-scale) - 36px * var(--pet-scale));
+  width: calc(26px * var(--pet-scale));
+  height: calc(36px * var(--pet-scale));
+}

@@ -1,0 +1,44 @@
+.bed-actions {
+  display: grid;
+  gap: 8px;
+}
+
+.bed-actions__status {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.bed-actions__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.bed-actions__button {
+  padding: 10px 14px;
+  border: 0;
+  border-radius: var(--radius-inner);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.bed-actions__button:disabled {
+  background: var(--color-stage);
+  color: var(--color-text-secondary);
+  cursor: default;
+}
+
+/* A short note about the flower that just bloomed. */
+.bed-actions__fact {
+  margin: -4px 0 0;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  text-align: center;
+}

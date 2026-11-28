@@ -4,7 +4,8 @@
   gap: 24px;
   max-width: 480px;
   margin: 0 auto;
-  padding: 20px 16px 32px;
+  /* Narrow side margins: the game window is the main thing and takes as much width as it can. */
+  padding: 20px 8px 32px;
 }
 
 .home__greeting {

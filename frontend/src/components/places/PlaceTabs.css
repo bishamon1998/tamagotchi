@@ -1,0 +1,26 @@
+.place-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  padding: 4px;
+  border-radius: var(--radius-inner);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.place-tabs__tab {
+  padding: 10px 4px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.place-tabs__tab--current {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
