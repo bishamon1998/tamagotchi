@@ -1,0 +1,49 @@
+.flower-book {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.flower-book__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: var(--radius-inner);
+  background: var(--color-stage);
+}
+
+.flower-book__image {
+  flex: none;
+  width: calc(26px * var(--pet-scale));
+  height: calc(36px * var(--pet-scale));
+  image-rendering: pixelated;
+}
+
+/* Not grown yet: only its shape shows, so the surprise stays. */
+.flower-book__item--unknown .flower-book__image {
+  filter: brightness(0);
+  opacity: 0.25;
+}
+
+.flower-book__text {
+  display: grid;
+  gap: 2px;
+}
+
+.flower-book__name {
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.flower-book__rarity {
+  color: var(--color-text-secondary);
+  font-size: 12px;
+}
+
+.flower-book__fact {
+  margin: 2px 0 0;
+  font-size: 13px;
+}

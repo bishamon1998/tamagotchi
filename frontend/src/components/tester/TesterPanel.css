@@ -8,8 +8,20 @@
 }
 
 .tester-panel__title {
-  margin: 0;
   font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.tester-panel__body {
+  display: grid;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.tester-panel__section {
+  margin: 4px 0 0;
+  font-size: 14px;
   font-weight: 800;
 }
 

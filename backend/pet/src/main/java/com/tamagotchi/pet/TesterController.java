@@ -34,6 +34,21 @@ class TesterController {
         tester.skipDay(user);
     }
 
+    @PostMapping("/api/v1/tester/seeds")
+    void addSeeds(TelegramUser user) {
+        tester.addSeeds(user);
+    }
+
+    @PostMapping("/api/v1/tester/bloom")
+    void bloomAll(TelegramUser user) {
+        tester.bloomAll(user);
+    }
+
+    @PostMapping("/api/v1/tester/flowers")
+    void everyFlower(TelegramUser user) {
+        tester.everyFlower(user);
+    }
+
     @DeleteMapping("/api/v1/tester/progress")
     void startOver(TelegramUser user) {
         tester.startOver(user);

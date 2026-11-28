@@ -1,0 +1,45 @@
+.garden-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 12px 16px 16px;
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.garden-card__heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.garden-card__title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.garden-card__note,
+.garden-card__error {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  text-align: center;
+}
+
+.garden-card__error {
+  color: var(--color-text);
+}
+
+.garden-card__book {
+  padding: 10px 8px;
+  border: 0;
+  border-radius: var(--radius-inner);
+  background: var(--color-stage);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}

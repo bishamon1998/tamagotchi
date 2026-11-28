@@ -13,7 +13,7 @@
   --shadow-card: 0 1px 2px rgb(20 24 32 / 6%), 0 4px 16px rgb(20 24 32 / 5%);
   --radius-card: 20px;
   --radius-inner: 14px;
-  /* Pixel art (the room and its decor) is drawn at this whole-number scale. */
+  /* Pixel art is drawn at this many screen pixels per art pixel; PixelStage sets it so the game scene fills its width. */
   --pixel-scale: 2;
   /* The pet is drawn a third smaller than the room, so it fits the room's proportions. */
   --pet-scale: calc(var(--pixel-scale) * 2 / 3);

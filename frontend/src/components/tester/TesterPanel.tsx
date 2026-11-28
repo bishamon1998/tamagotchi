@@ -12,7 +12,29 @@ type Props = {
   onDemo: (request: PetDemoRequest) => void;
 };
 
-/** Tools for testers to check the game without waiting: game tools (the pet is loaded again after each) and animations. */
+/** Remembers in this browser whether the tester keeps the panel open; a convenience only, so failures are ignored. */
+const OPEN_KEY = "tester-panel-open";
+
+function rememberedOpen(): boolean {
+  try {
+    return localStorage.getItem(OPEN_KEY) === "true";
+  } catch {
+    return false;
+  }
+}
+
+function rememberOpen(open: boolean) {
+  try {
+    localStorage.setItem(OPEN_KEY, String(open));
+  } catch {
+    // Storage can be blocked; the panel then just starts folded.
+  }
+}
+
+/**
+ * Tools for testers to check the game without waiting: time and coins, the garden (seeds, instant blooms, every
+ * flower) and animations. The place on screen is loaded again after each tool. The panel folds away when not needed.
+ */
 export function TesterPanel({ initData, text, onDone, onDemo }: Props) {
   const [pending, setPending] = useState<TesterTool | null>(null);
   const [failed, setFailed] = useState(false);
@@ -32,22 +54,40 @@ export function TesterPanel({ initData, text, onDone, onDemo }: Props) {
   }
 
   const button = (tool: TesterTool, label: string) => (
-    <button className="tester-panel__button" type="button" disabled={pending !== null} aria-busy={pending === tool} onClick={() => run(tool)}>
+    <button
+      className="tester-panel__button"
+      type="button"
+      disabled={pending !== null}
+      aria-busy={pending === tool}
+      onClick={() => run(tool)}
+    >
       {label}
     </button>
   );
 
   return (
-    <section className="tester-panel" aria-labelledby="tester-title">
-      <h2 className="tester-panel__title" id="tester-title">{text.title}</h2>
-      <div className="tester-panel__tools">
-        {button("coins", text.coins)}
-        {button("skip-hours", text.skipHours)}
-        {button("skip-day", text.skipDay)}
-        {button("start-over", text.startOver)}
+    <details
+      className="tester-panel"
+      open={rememberedOpen()}
+      onToggle={(event) => rememberOpen(event.currentTarget.open)}
+    >
+      <summary className="tester-panel__title">{text.title}</summary>
+      <div className="tester-panel__body">
+        <div className="tester-panel__tools">
+          {button("coins", text.coins)}
+          {button("skip-hours", text.skipHours)}
+          {button("skip-day", text.skipDay)}
+          {button("start-over", text.startOver)}
+        </div>
+        <h3 className="tester-panel__section">{text.gardenTools.title}</h3>
+        <div className="tester-panel__tools">
+          {button("seeds", text.gardenTools.seeds)}
+          {button("bloom", text.gardenTools.bloom)}
+          {button("flowers", text.gardenTools.flowers)}
+        </div>
+        <AnimationControls text={text.animations} onDemo={onDemo} />
+        {failed && <p className="tester-panel__error" role="alert">{text.failed}</p>}
       </div>
-      <AnimationControls text={text.animations} onDemo={onDemo} />
-      {failed && <p className="tester-panel__error" role="alert">{text.failed}</p>}
-    </section>
+    </details>
   );
 }

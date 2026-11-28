@@ -2,6 +2,7 @@ import type { CareResult, PetAction, PetState } from "./pet/petNeeds";
 import type { PetHome } from "./pet/petHome";
 import type { Wallet } from "./pet/wallet";
 import type { DecorItemId, DecorShop } from "./decor/decor";
+import type { FlowerId, Garden, SeedKind } from "./garden/garden";
 
 const REQUEST_TIMEOUT_MS = 10_000;
 
@@ -18,14 +19,18 @@ export function fetchMe(initData: string): Promise<Me> {
   return request("/api/v1/me", initData);
 }
 
-/** Loads the pet, the coins and the decor shop. The first visit hatches the pet; the day's first visit pays the bonus. */
+/**
+ * Loads the pet, the coins, the decor shop and the vase. The first visit hatches the pet; the day's first visit pays
+ * the bonus and brings the free seed.
+ */
 export async function fetchPetHome(initData: string): Promise<PetHome> {
-  const [pet, wallet, decor] = await Promise.all([
+  const [pet, wallet, decor, garden] = await Promise.all([
     fetchPet(initData),
     request<Wallet>("/api/v1/wallet", initData),
     request<DecorShop>("/api/v1/decor", initData),
+    fetchGarden(initData),
   ]);
-  return { pet, wallet, decor };
+  return { pet, wallet, decor, vase: garden.vase };
 }
 
 /** Loads the pet as it is now, for example once it has woken up. */
@@ -63,14 +68,51 @@ export function removeDecor(initData: string, item: DecorItemId): Promise<DecorS
   return request(`/api/v1/decor/${item}/placement`, initData, "DELETE");
 }
 
+/** Loads the garden; the day's first visit also brings the free seed. */
+export function fetchGarden(initData: string): Promise<Garden> {
+  return request("/api/v1/garden", initData);
+}
+
+export function buySeed(initData: string, kind: SeedKind): Promise<Garden> {
+  return request(`/api/v1/garden/seeds/${kind}/purchase`, initData, "POST");
+}
+
+/** Plants a seed in an empty bed; what it grows into shows only when it blooms. */
+export function plantSeed(initData: string, bed: number, kind: SeedKind): Promise<Garden> {
+  return request(`/api/v1/garden/beds/${bed}/plant/${kind}`, initData, "POST");
+}
+
+/** Waters a growing plant, once a day. */
+export function waterBed(initData: string, bed: number): Promise<Garden> {
+  return request(`/api/v1/garden/beds/${bed}/water`, initData, "POST");
+}
+
+/** Picks a bloomed flower into the basket and frees the bed. */
+export function pickFlower(initData: string, bed: number): Promise<Garden> {
+  return request(`/api/v1/garden/beds/${bed}/pick`, initData, "POST");
+}
+
+/** Sells one picked flower at the market. */
+export function sellFlower(initData: string, flower: FlowerId): Promise<Garden> {
+  return request(`/api/v1/garden/basket/${flower}/sale`, initData, "POST");
+}
+
+/** Puts one picked flower in the vase at home. */
+export function putInVase(initData: string, flower: FlowerId): Promise<Garden> {
+  return request(`/api/v1/garden/vase/${flower}`, initData, "PUT");
+}
+
 /** Tester tools. They change only the tester's own game, so the app reloads the pet afterwards. */
-export type TesterTool = "coins" | "skip-hours" | "skip-day" | "start-over";
+export type TesterTool = "coins" | "skip-hours" | "skip-day" | "start-over" | "seeds" | "bloom" | "flowers";
 
 const TESTER_REQUESTS: Record<TesterTool, { path: string; method: Method }> = {
   coins: { path: "/api/v1/tester/coins", method: "POST" },
   "skip-hours": { path: "/api/v1/tester/skip-hours", method: "POST" },
   "skip-day": { path: "/api/v1/tester/skip-day", method: "POST" },
   "start-over": { path: "/api/v1/tester/progress", method: "DELETE" },
+  seeds: { path: "/api/v1/tester/seeds", method: "POST" },
+  bloom: { path: "/api/v1/tester/bloom", method: "POST" },
+  flowers: { path: "/api/v1/tester/flowers", method: "POST" },
 };
 
 export async function runTesterTool(initData: string, tool: TesterTool): Promise<void> {

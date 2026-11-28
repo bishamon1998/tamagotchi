@@ -1,0 +1,63 @@
+/* The garden picture, 160x100 room pixels at the shared pixel scale; narrow screens crop its sides like the room. */
+.garden-scene {
+  position: relative;
+  width: min(100%, calc(160px * var(--pixel-scale)));
+  height: calc(100px * var(--pixel-scale));
+  margin: 0 auto;
+  overflow: hidden;
+  border-radius: var(--radius-inner);
+}
+
+.garden-scene__room {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: calc(160px * var(--pixel-scale));
+  height: calc(100px * var(--pixel-scale));
+  transform: translateX(-50%);
+  background: url("../../assets/garden/garden.png") 0 0 / 100% 100% no-repeat;
+  image-rendering: pixelated;
+}
+
+/* Beds sit where the garden picture draws them: two rows of three on the left, 28x10 room pixels each. The button
+   reaches up over the plant (24 room pixels tall), so tapping the plant selects its bed too. */
+.garden-bed {
+  --bed-x: 0;
+  --bed-y: 0;
+  position: absolute;
+  left: calc((var(--bed-x) - 1) * 1px * var(--pixel-scale));
+  top: calc((var(--bed-y) - 19) * 1px * var(--pixel-scale));
+  width: calc(30px * var(--pixel-scale));
+  height: calc(31px * var(--pixel-scale));
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  background: none;
+  cursor: pointer;
+}
+
+.garden-bed:nth-child(1) { --bed-x: 6; --bed-y: 54; }
+.garden-bed:nth-child(2) { --bed-x: 40; --bed-y: 54; }
+.garden-bed:nth-child(3) { --bed-x: 74; --bed-y: 54; }
+.garden-bed:nth-child(4) { --bed-x: 6; --bed-y: 78; }
+.garden-bed:nth-child(5) { --bed-x: 40; --bed-y: 78; }
+.garden-bed:nth-child(6) { --bed-x: 74; --bed-y: 78; }
+
+.garden-bed--selected,
+.garden-bed:focus-visible {
+  border-color: var(--color-on-accent);
+  outline: 2px solid var(--color-accent);
+  outline-offset: 0;
+}
+
+/* Plants are 26x36 pictures drawn at the pet's scale, like the corgi; one stands in the middle of its bed, its foot on
+   the soil. */
+.garden-bed__plant {
+  position: absolute;
+  left: 50%;
+  bottom: calc(5px * var(--pixel-scale));
+  width: calc(26px * var(--pet-scale));
+  height: calc(36px * var(--pet-scale));
+  translate: -50% 0;
+  image-rendering: pixelated;
+}

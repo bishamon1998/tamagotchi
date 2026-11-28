@@ -24,7 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Tester tools through the Mini App API: only users listed in the configuration may use them, and they change only
- * the tester's own game. Each test uses its own user; users 5001 to 5005 are testers.
+ * the tester's own game. Each test uses its own user; users 5001 to 5008 are testers.
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(TestDatabase.class)
@@ -45,7 +45,7 @@ class TesterApiIT {
     static void properties(DynamicPropertyRegistry registry) {
         registry.add("telegram.bot-token", () -> BOT_TOKEN);
         registry.add("telegram.api-url", telegram::url);
-        registry.add("testers.ids", () -> "5001,5002,5003,5004,5005");
+        registry.add("testers.ids", () -> "5001,5002,5003,5004,5005,5006,5007,5008");
     }
 
     @Test
@@ -60,6 +60,35 @@ class TesterApiIT {
         assertThat(status(NOT_A_TESTER, HttpMethod.POST, "/api/v1/tester/skip-hours")).isEqualTo(403);
         assertThat(status(NOT_A_TESTER, HttpMethod.POST, "/api/v1/tester/skip-day")).isEqualTo(403);
         assertThat(status(NOT_A_TESTER, HttpMethod.DELETE, "/api/v1/tester/progress")).isEqualTo(403);
+        assertThat(status(NOT_A_TESTER, HttpMethod.POST, "/api/v1/tester/seeds")).isEqualTo(403);
+        assertThat(status(NOT_A_TESTER, HttpMethod.POST, "/api/v1/tester/bloom")).isEqualTo(403);
+        assertThat(status(NOT_A_TESTER, HttpMethod.POST, "/api/v1/tester/flowers")).isEqualTo(403);
+    }
+
+    @Test
+    void aTesterGetsSeedsAndCanMakeEverythingBloom() throws IOException {
+        status(5006, HttpMethod.POST, "/api/v1/tester/seeds");
+        JsonNode seeded = json(5006, HttpMethod.GET, "/api/v1/garden");
+        json(5006, HttpMethod.POST, "/api/v1/garden/beds/0/plant/rare");
+
+        status(5006, HttpMethod.POST, "/api/v1/tester/bloom");
+        JsonNode bloomed = json(5006, HttpMethod.GET, "/api/v1/garden");
+
+        assertThat(seeded.path("seeds").path("common").asInt()).isEqualTo(6);
+        assertThat(seeded.path("seeds").path("rare").asInt()).isEqualTo(2);
+        JsonNode plant = bloomed.path("beds").get(0).path("plant");
+        assertThat(plant.path("stage").asText()).isEqualTo("bloom");
+        assertThat(bloomed.path("discovered")).containsExactly(plant.path("flower"));
+    }
+
+    @Test
+    void aTesterCanGetOneOfEveryFlower() throws IOException {
+        status(5007, HttpMethod.POST, "/api/v1/tester/flowers");
+
+        JsonNode garden = json(5007, HttpMethod.GET, "/api/v1/garden");
+
+        assertThat(garden.path("basket").size()).isEqualTo(12);
+        assertThat(garden.path("discovered")).hasSize(12);
     }
 
     @Test

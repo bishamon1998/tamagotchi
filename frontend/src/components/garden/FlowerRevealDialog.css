@@ -1,0 +1,49 @@
+.flower-reveal {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+/* Up close: three times the size it has in a bed. */
+.flower-reveal__image {
+  width: calc(26px * var(--pet-scale) * 3);
+  height: calc(36px * var(--pet-scale) * 3);
+  image-rendering: pixelated;
+  animation: flower-reveal-pop 0.3s ease-out;
+}
+
+@keyframes flower-reveal-pop {
+  from { scale: 0.6; opacity: 0; }
+  to { scale: 1; opacity: 1; }
+}
+
+.flower-reveal__rarity {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.flower-reveal__fact {
+  margin: 0;
+  font-size: 15px;
+}
+
+.flower-reveal__done {
+  padding: 10px 20px;
+  border: 0;
+  border-radius: var(--radius-inner);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flower-reveal__image {
+    animation: none;
+  }
+}

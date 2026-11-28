@@ -14,6 +14,10 @@ One repository, two deployable services:
     A pet put to bed sleeps for hours, until its energy is full, and cannot be cared for meanwhile. The user names
     the pet when it arrives and can rename it later with `PUT /api/v1/pet/name`. Stroking the pet
     (`POST /api/v1/pet/stroke`) cheers it up a little, at most every half a minute, and pays no coins.
+    The garden (`/api/v1/garden`) has six beds: seeds come free once a day or for coins, a plant grows one stage per
+    day it is watered and wilts, then dies, when it is not. Which flower a seed becomes shows only when it blooms; it
+    then goes into the collection book and can be picked into the basket, to be sold at the market for coins by its
+    rarity or put in the vase at home. Garden numbers live in `GardenRules`.
     Coins are counted on the server, with a ledger of every credit and debit: care earns coins only when the need was low
     (with a daily cap), the day's first `GET /api/v1/wallet` pays a bonus that grows with the streak of days in a row,
     a treat costs coins (plain food stays free), and `/api/v1/decor` sells room decor, bought once and placed one per slot.
@@ -73,6 +77,8 @@ Integration tests only: `sh mvnw verify`. They start PostgreSQL in Docker (Testc
   that a sleeping pet regains energy, wakes up and cannot be cared for meanwhile, and that stroking cheers it up at most
   every half a minute.
 - `TesterApiIT` checks that only configured testers can add coins, skip hours or a day and start over.
+- `GardenApiIT` gets the free daily seed, buys and plants seeds, waters a plant to bloom, lets one wilt and die, and
+  picks a bloom for coins.
 - `CoinsApiIT` earns coins (daily bonus and streak, useful care, daily cap) and spends them on treats and decor.
 - `MiniAppApiIT` calls `/api/v1/me` over HTTP with launch data signed the way Telegram signs it, plus changed, expired and missing data.
 
